@@ -1,13 +1,23 @@
 /*
  * Tests de la cabecera: comportamiento del menú móvil.
  */
-import { describe, it, expect, afterEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
+import { createPinia, setActivePinia } from 'pinia'
 import SiteHeader from '../components/layout/SiteHeader.vue'
 import router from '../router'
 
 /* Guardamos el componente montado para poder desmontarlo después de cada test */
 let wrapper
+
+/* Pinia nueva en cada test: el guard del router usa el store de autenticación */
+let pinia
+
+beforeEach(() => {
+  pinia = createPinia()
+  setActivePinia(pinia)
+  localStorage.clear()
+})
 
 /*
  * Monta la cabecera con el router real, partiendo siempre de la ruta de inicio.
@@ -18,7 +28,10 @@ let wrapper
 async function mountHeader() {
   await router.push('/')
   await router.isReady()
-  wrapper = mount(SiteHeader, { global: { plugins: [router] }, attachTo: document.body })
+  wrapper = mount(SiteHeader, {
+    global: { plugins: [pinia, router] },
+    attachTo: document.body,
+  })
   return wrapper
 }
 
