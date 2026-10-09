@@ -1,11 +1,25 @@
-<script setup></script>
+<script setup>
+/*
+ * Componente raíz: define el layout común de todas las páginas.
+ * Cabecera y pie fijos; en medio, la vista de la ruta activa.
+ */
+import { RouterView } from 'vue-router'
+import SiteHeader from '@/components/layout/SiteHeader.vue'
+import SiteFooter from '@/components/layout/SiteFooter.vue'
+</script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
-</template>
+  <!--
+    min-h-screen + flex-col + flex-1 en main: si el contenido es corto,
+    el pie se queda abajo del todo en lugar de subir a mitad de pantalla
+  -->
+  <div class="flex min-h-screen flex-col">
+    <SiteHeader />
 
-<style scoped></style>
+    <main class="flex-1">
+      <RouterView />
+    </main>
+
+    <SiteFooter />
+  </div>
+</template>
