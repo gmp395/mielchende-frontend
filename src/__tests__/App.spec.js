@@ -2,10 +2,20 @@
  * Test de integración del layout: monta App con sus hijos reales
  * (cabecera, vista activa y pie) y el router de la aplicación.
  */
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
+import { createPinia, setActivePinia } from 'pinia'
 import App from '../App.vue'
 import router from '../router'
+
+/* Pinia nueva en cada test: el guard del router usa el store de autenticación */
+let pinia
+
+beforeEach(() => {
+  pinia = createPinia()
+  setActivePinia(pinia)
+  localStorage.clear()
+})
 
 describe('App (layout)', () => {
   it('muestra la cabecera, la vista de la ruta activa y el pie', async () => {
@@ -14,7 +24,7 @@ describe('App (layout)', () => {
     await router.isReady()
 
     /* mount (no shallowMount): renderiza los componentes hijos reales */
-    const wrapper = mount(App, { global: { plugins: [router] } })
+    const wrapper = mount(App, { global: { plugins: [pinia, router] } })
 
     /* Espera a que se resuelva la carga diferida (lazy loading) de la vista */
     await flushPromises()

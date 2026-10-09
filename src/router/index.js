@@ -1,7 +1,9 @@
 /*
- * Configuración de Vue Router: define qué vista se muestra para cada URL.
+ * Configuración de Vue Router: define qué vista se muestra para cada URL
+ * y protege las rutas privadas con un guard global (beforeEach).
  */
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
 /*
  * Vista temporal para las secciones aún no construidas.
@@ -26,13 +28,46 @@ const router = createRouter({
     { path: '/recursos/amenazas', name: 'resources-threats', component: ComingSoonView, meta: { title: 'Amenazas para las Abejas' } },
     { path: '/recursos/guias', name: 'resources-guides', component: ComingSoonView, meta: { title: 'Guías Prácticas' } },
 
-    /* Acceso de usuario (se construye en MC-48) */
-    { path: '/login', name: 'login', component: ComingSoonView, meta: { title: 'Acceder' } },
+    /* Acceso de usuario: solo para quien no ha iniciado sesión (MC-48) */
+    { path: '/login', name: 'login', component: ComingSoonView, meta: { title: 'Acceder', guestOnly: true } },
+    { path: '/registro', name: 'register', component: ComingSoonView, meta: { title: 'Crear cuenta', guestOnly: true } },
+
+    /* Área de clienta: requiere sesión */
+    { path: '/mis-solicitudes', name: 'my-orders', component: ComingSoonView, meta: { title: 'Mis solicitudes', requiresAuth: true } },
+
+    /* Panel de administración: requiere rol ADMIN */
+    { path: '/admin', name: 'admin', component: ComingSoonView, meta: { title: 'Panel de administración', requiresAdmin: true } },
 
     /* Páginas legales */
     { path: '/aviso-legal', name: 'legal-notice', component: ComingSoonView, meta: { title: 'Aviso legal' } },
     { path: '/privacidad', name: 'privacy', component: ComingSoonView, meta: { title: 'Política de privacidad' } },
   ],
+})
+
+/*
+ * Guard global: se ejecuta antes de cada navegación.
+ * Devolver una ruta cancela la navegación y redirige allí;
+ * no devolver nada deja pasar.
+ * Es solo experiencia de usuario: la seguridad real la aplica el backend.
+ */
+router.beforeEach((to) => {
+  const authStore = useAuthStore()
+  const needsLogin = to.meta.requiresAuth || to.meta.requiresAdmin
+
+  /* Ruta privada sin sesión: al login, recordando a dónde quería ir */
+  if (needsLogin && !authStore.isAuthenticated) {
+    return { name: 'login', query: { redirect: to.fullPath } }
+  }
+
+  /* Ruta de admin con sesión de clienta: al inicio */
+  if (to.meta.requiresAdmin && !authStore.isAdmin) {
+    return { name: 'home' }
+  }
+
+  /* Login o registro con sesión ya iniciada: al inicio */
+  if (to.meta.guestOnly && authStore.isAuthenticated) {
+    return { name: 'home' }
+  }
 })
 
 export default router
