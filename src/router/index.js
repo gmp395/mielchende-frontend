@@ -32,7 +32,7 @@ const router = createRouter({
     { path: '/login', name: 'login', component: ComingSoonView, meta: { title: 'Acceder', guestOnly: true } },
     { path: '/registro', name: 'register', component: ComingSoonView, meta: { title: 'Crear cuenta', guestOnly: true } },
 
-    /* Área de clienta: requiere sesión */
+    /* Área de cliente: requiere sesión */
     { path: '/mis-solicitudes', name: 'my-orders', component: ComingSoonView, meta: { title: 'Mis solicitudes', requiresAuth: true } },
 
     /* Panel de administración: requiere rol ADMIN */
@@ -59,7 +59,7 @@ router.beforeEach((to) => {
     return { name: 'login', query: { redirect: to.fullPath } }
   }
 
-  /* Ruta de admin con sesión de clienta: al inicio */
+  /* Ruta de admin con sesión de cliente: al inicio */
   if (to.meta.requiresAdmin && !authStore.isAdmin) {
     return { name: 'home' }
   }

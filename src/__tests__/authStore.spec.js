@@ -37,7 +37,7 @@ describe('auth store', () => {
     vi.clearAllMocks()
   })
 
-  it('al iniciar sesión guarda el token y expone email y rol de clienta', async () => {
+  it('al iniciar sesión guarda el token y expone email y rol de cliente', async () => {
     const token = makeToken({ sub: 'ana@test.com', roles: ['ROLE_USER'], exp: inOneHour() })
     authRepository.login.mockResolvedValue({ token })
     const store = useAuthStore()
