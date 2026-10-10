@@ -12,14 +12,22 @@ import { useAuthStore } from '@/stores/auth'
  */
 const ComingSoonView = () => import('@/views/ComingSoonView.vue')
 const AuthView = () => import('@/views/AuthView.vue')
+const CatalogView = () => import('@/views/CatalogView.vue')
+const ProductDetailView = () => import('@/views/ProductDetailView.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     /* Navegación principal */
     { path: '/', name: 'home', component: ComingSoonView, meta: { title: 'Inicio' } },
-    { path: '/catalogo', name: 'catalog', component: ComingSoonView, meta: { title: 'Catálogo' } },
     { path: '/contacto', name: 'contact', component: ComingSoonView, meta: { title: 'Contacto' } },
+
+    /* Catálogo: listado y ficha de producto (público) */
+    { path: '/catalogo', name: 'catalog', component: CatalogView, meta: { title: 'Catálogo' } },
+    { path: '/catalogo/:id', name: 'product-detail', component: ProductDetailView, meta: { title: 'Producto' } },
+
+    /* Solicitud de pedido: requiere sesión (se construye en MC-51) */
+    { path: '/solicitud', name: 'order-request', component: ComingSoonView, meta: { title: 'Solicitud de pedido', requiresAuth: true } },
 
     /* Recursos apícolas */
     { path: '/recursos', name: 'resources', component: ComingSoonView, meta: { title: 'Recursos Apícolas' } },
