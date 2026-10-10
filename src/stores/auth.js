@@ -55,7 +55,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   /*
    * Tras registrarse, iniciamos sesión automáticamente
-   * para que la clienta no tenga que volver a escribir sus datos.
+   * para que el cliente no tenga que volver a escribir sus datos.
    */
   async function register(name, userEmail, password) {
     await authRepository.register(name, userEmail, password)

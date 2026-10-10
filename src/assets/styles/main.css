@@ -10,6 +10,8 @@
  * Gracias a esto existen clases como bg-background, text-primary o rounded-lg.
  * Es "inline" porque sus valores apuntan a las variables de :root,
  * y Tailwind los sustituye directamente en cada clase.
+ * Los cinco últimos colores (honey, honey-soft, forest, forest-foreground, sand)
+ * son los propios de la marca.
  */
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -35,8 +37,6 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-
-  /* Colores propios de la marca */
   --color-honey: var(--honey);
   --color-honey-soft: var(--honey-soft);
   --color-forest: var(--forest);

@@ -43,7 +43,7 @@ describe('guards del router', () => {
     expect(router.currentRoute.value.name).toBe('login')
   })
 
-  it('una clienta que entra en el panel va al inicio', async () => {
+  it('un cliente que entra en el panel va al inicio', async () => {
     loginAs('ROLE_USER')
 
     await router.push('/admin')
@@ -51,7 +51,7 @@ describe('guards del router', () => {
     expect(router.currentRoute.value.name).toBe('home')
   })
 
-  it('la administradora puede entrar en el panel', async () => {
+  it('el administrador puede entrar en el panel', async () => {
     loginAs('ROLE_ADMIN')
 
     await router.push('/admin')
@@ -59,7 +59,7 @@ describe('guards del router', () => {
     expect(router.currentRoute.value.name).toBe('admin')
   })
 
-  it('una clienta con sesión puede entrar en Mis solicitudes', async () => {
+  it('un cliente con sesión puede entrar en Mis solicitudes', async () => {
     loginAs('ROLE_USER')
 
     await router.push('/mis-solicitudes')

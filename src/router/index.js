@@ -6,11 +6,12 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
 /*
- * Vista temporal para las secciones aún no construidas.
- * Se carga de forma diferida (lazy loading): solo se descarga
- * cuando el usuario visita una de estas rutas.
+ * Vistas cargadas de forma diferida (lazy loading): solo se descargan
+ * cuando el usuario visita una de sus rutas.
+ * ComingSoonView es la vista temporal para las secciones aún no construidas.
  */
 const ComingSoonView = () => import('@/views/ComingSoonView.vue')
+const AuthView = () => import('@/views/AuthView.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -28,11 +29,11 @@ const router = createRouter({
     { path: '/recursos/amenazas', name: 'resources-threats', component: ComingSoonView, meta: { title: 'Amenazas para las Abejas' } },
     { path: '/recursos/guias', name: 'resources-guides', component: ComingSoonView, meta: { title: 'Guías Prácticas' } },
 
-    /* Acceso de usuario: solo para quien no ha iniciado sesión (MC-48) */
-    { path: '/login', name: 'login', component: ComingSoonView, meta: { title: 'Acceder', guestOnly: true } },
-    { path: '/registro', name: 'register', component: ComingSoonView, meta: { title: 'Crear cuenta', guestOnly: true } },
+    /* Acceso de usuario: una sola vista con dos pestañas, solo sin sesión iniciada */
+    { path: '/login', name: 'login', component: AuthView, meta: { title: 'Acceder', guestOnly: true } },
+    { path: '/registro', name: 'register', component: AuthView, meta: { title: 'Crear cuenta', guestOnly: true } },
 
-    /* Área de clienta: requiere sesión */
+    /* Área de cliente: requiere sesión */
     { path: '/mis-solicitudes', name: 'my-orders', component: ComingSoonView, meta: { title: 'Mis solicitudes', requiresAuth: true } },
 
     /* Panel de administración: requiere rol ADMIN */
@@ -59,7 +60,7 @@ router.beforeEach((to) => {
     return { name: 'login', query: { redirect: to.fullPath } }
   }
 
-  /* Ruta de admin con sesión de clienta: al inicio */
+  /* Ruta de admin con sesión de cliente: al inicio */
   if (to.meta.requiresAdmin && !authStore.isAdmin) {
     return { name: 'home' }
   }
