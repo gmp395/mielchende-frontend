@@ -2,7 +2,7 @@
  * Tests de las utilidades de formato.
  */
 import { describe, it, expect } from 'vitest'
-import { formatPrice } from '@/utils/format'
+import { formatDate, formatPrice } from '@/utils/format'
 
 describe('formatPrice', () => {
   /*
@@ -16,5 +16,11 @@ describe('formatPrice', () => {
 
   it('acepta también el precio como texto', () => {
     expect(formatPrice('15.00')).toMatch(/^15,00\s€$/)
+  })
+})
+
+describe('formatDate', () => {
+  it('formatea la fecha del backend en español, con el mes en letra', () => {
+    expect(formatDate('2026-10-10T19:05:12')).toBe('10 de octubre de 2026')
   })
 })
