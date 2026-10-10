@@ -1,11 +1,12 @@
 <script setup>
 /*
  * Cabecera común de la web: logo, menú principal (escritorio),
- * acceso de usuario y menú desplegable para móvil.
+ * acceso o menú de cuenta según la sesión, y menú desplegable para móvil.
  */
-import { ref, watch } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
-import { Menu, X, UserRound, ChevronDown } from '@lucide/vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
+import { Menu, X, UserRound, ChevronDown, LogOut } from '@lucide/vue'
+import { useAuthStore } from '@/stores/auth'
 /* Logo importado desde assets: Vite lo procesa y los tests lo resuelven */
 import logoUrl from '@/assets/images/logo.png'
 
@@ -26,27 +27,87 @@ const resourceLinks = [
 
 /*
  * Clases comunes de los enlaces de escritorio.
+ * whitespace-nowrap: el texto no se parte en dos líneas.
  * [&.router-link-exact-active]: aplica el color miel cuando
  * RouterLink marca el enlace como el de la página actual.
  */
 const linkClass =
-  'text-base text-foreground/80 transition-colors hover:text-primary [&.router-link-exact-active]:text-primary'
+  'whitespace-nowrap text-base text-foreground/80 transition-colors hover:text-primary [&.router-link-exact-active]:text-primary'
 
-/* Estado del menú móvil: abierto o cerrado */
+const route = useRoute()
+const router = useRouter()
+const authStore = useAuthStore()
+
+/* Enlace al área privada según el rol: panel para el administrador, solicitudes para el cliente */
+const accountLink = computed(() =>
+  authStore.isAdmin
+    ? { to: '/admin', label: 'Panel de administración' }
+    : { to: '/mis-solicitudes', label: 'Mis solicitudes' },
+)
+
+/* Estado de los dos menús desplegables */
 const isMenuOpen = ref(false)
+const isAccountMenuOpen = ref(false)
+
+/* Referencia al contenedor del menú de cuenta, para detectar clics fuera de él */
+const accountMenuRef = ref(null)
 
 function toggleMenu() {
   isMenuOpen.value = !isMenuOpen.value
 }
 
-/* Cierra el menú móvil automáticamente cada vez que cambia la ruta */
-const route = useRoute()
+function toggleAccountMenu() {
+  isAccountMenuOpen.value = !isAccountMenuOpen.value
+}
+
+/* Cierra los dos menús automáticamente cada vez que cambia la ruta */
 watch(
   () => route.fullPath,
   () => {
     isMenuOpen.value = false
+    isAccountMenuOpen.value = false
   },
 )
+
+/* Cierra el menú de cuenta si se hace clic fuera de él */
+function handleClickOutside(event) {
+  if (
+    isAccountMenuOpen.value &&
+    accountMenuRef.value &&
+    !accountMenuRef.value.contains(event.target)
+  ) {
+    isAccountMenuOpen.value = false
+  }
+}
+
+/* Cierra el menú de cuenta con la tecla Escape */
+function handleKeydown(event) {
+  if (event.key === 'Escape') {
+    isAccountMenuOpen.value = false
+  }
+}
+
+/*
+ * Ciclo de vida: los listeners del documento se registran al montar
+ * la cabecera y se eliminan al desmontarla, para no dejar escuchas vivas.
+ */
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+  document.addEventListener('keydown', handleKeydown)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+  document.removeEventListener('keydown', handleKeydown)
+})
+
+/* Cierra sesión y lleva al inicio (para no quedarse en una página privada) */
+function handleLogout() {
+  isAccountMenuOpen.value = false
+  isMenuOpen.value = false
+  authStore.logout()
+  router.push('/')
+}
 </script>
 
 <template>
@@ -67,11 +128,11 @@ watch(
       -->
       <RouterLink to="/" class="flex items-center gap-3 font-display text-2xl tracking-tight">
         <img :src="logoUrl" alt="" class="size-12" />
-        <span>Miel <span class="text-primary">Chende</span></span>
+        <span class="whitespace-nowrap">Miel <span class="text-primary">Chende</span></span>
       </RouterLink>
 
-      <!-- Menú de escritorio: oculto en móvil, visible desde md (768px) -->
-      <nav aria-label="Navegación principal" class="hidden items-center gap-8 md:flex">
+      <!-- Menú de escritorio: oculto hasta lg (1024px), donde ya cabe holgado -->
+      <nav aria-label="Navegación principal" class="hidden items-center gap-8 lg:flex">
         <RouterLink v-for="link in mainLinks" :key="link.to" :to="link.to" :class="linkClass">
           {{ link.label }}
         </RouterLink>
@@ -104,10 +165,11 @@ watch(
         <RouterLink to="/contacto" :class="linkClass">Contacto</RouterLink>
       </nav>
 
-      <!-- Acciones: acceso de usuario y botón del menú móvil -->
+      <!-- Acciones: acceso o menú de cuenta, y botón del menú móvil -->
       <div class="flex items-center gap-1">
-        <!-- De momento siempre lleva a /login; en MC-48 cambiará según haya sesión -->
+        <!-- Sin sesión: el icono lleva a la pantalla de acceso -->
         <RouterLink
+          v-if="!authStore.isAuthenticated"
           to="/login"
           aria-label="Acceder"
           class="inline-flex size-11 items-center justify-center rounded-md transition-colors hover:bg-secondary"
@@ -115,10 +177,47 @@ watch(
           <UserRound class="size-6" aria-hidden="true" />
         </RouterLink>
 
-        <!-- Botón hamburguesa: solo visible en móvil -->
+        <!-- Con sesión: el icono abre el menú de cuenta -->
+        <div v-else ref="accountMenuRef" class="relative">
+          <button
+            type="button"
+            aria-label="Mi cuenta"
+            :aria-expanded="isAccountMenuOpen"
+            aria-controls="account-menu"
+            class="inline-flex size-11 items-center justify-center rounded-md text-primary transition-colors hover:bg-secondary"
+            @click="toggleAccountMenu"
+          >
+            <UserRound class="size-6" aria-hidden="true" />
+          </button>
+
+          <div
+            v-show="isAccountMenuOpen"
+            id="account-menu"
+            class="absolute right-0 top-full mt-2 w-64 rounded-lg border border-border bg-card p-1.5 shadow-card"
+          >
+            <!-- truncate: si el email es largo, se corta con "…" en vez de desbordar -->
+            <p class="truncate px-3 py-2 text-xs text-muted-foreground">{{ authStore.email }}</p>
+            <RouterLink
+              :to="accountLink.to"
+              class="block rounded-md px-3 py-2 text-sm text-card-foreground/85 transition-colors hover:bg-secondary hover:text-primary"
+            >
+              {{ accountLink.label }}
+            </RouterLink>
+            <button
+              type="button"
+              class="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm text-card-foreground/85 transition-colors hover:bg-secondary hover:text-primary"
+              @click="handleLogout"
+            >
+              <LogOut class="size-4" aria-hidden="true" />
+              Cerrar sesión
+            </button>
+          </div>
+        </div>
+
+        <!-- Botón hamburguesa: solo visible por debajo de lg -->
         <button
           type="button"
-          class="inline-flex size-11 items-center justify-center rounded-md transition-colors hover:bg-secondary md:hidden"
+          class="inline-flex size-11 items-center justify-center rounded-md transition-colors hover:bg-secondary lg:hidden"
           :aria-label="isMenuOpen ? 'Cerrar menú' : 'Abrir menú'"
           :aria-expanded="isMenuOpen"
           aria-controls="mobile-menu"
@@ -135,7 +234,7 @@ watch(
       v-show="isMenuOpen"
       id="mobile-menu"
       aria-label="Navegación principal (móvil)"
-      class="border-t border-border bg-sand md:hidden"
+      class="border-t border-border bg-sand lg:hidden"
     >
       <div class="flex w-full flex-col gap-1 px-5 py-4">
         <RouterLink
@@ -164,7 +263,22 @@ watch(
         <RouterLink to="/contacto" class="rounded-md px-3 py-3 text-base hover:bg-secondary">
           Contacto
         </RouterLink>
-        <RouterLink to="/login" class="mt-4 rounded-md bg-secondary px-3 py-3 text-base">
+
+        <!-- Con sesión: enlace al área privada y cerrar sesión; sin sesión: Acceder -->
+        <template v-if="authStore.isAuthenticated">
+          <RouterLink :to="accountLink.to" class="mt-4 rounded-md bg-secondary px-3 py-3 text-base">
+            {{ accountLink.label }}
+          </RouterLink>
+          <button
+            type="button"
+            class="flex items-center gap-2 rounded-md px-3 py-3 text-left text-base hover:bg-secondary"
+            @click="handleLogout"
+          >
+            <LogOut class="size-5" aria-hidden="true" />
+            Cerrar sesión
+          </button>
+        </template>
+        <RouterLink v-else to="/login" class="mt-4 rounded-md bg-secondary px-3 py-3 text-base">
           Acceder
         </RouterLink>
       </div>
