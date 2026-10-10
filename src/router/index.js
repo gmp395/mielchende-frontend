@@ -14,6 +14,7 @@ const ComingSoonView = () => import('@/views/ComingSoonView.vue')
 const AuthView = () => import('@/views/AuthView.vue')
 const CatalogView = () => import('@/views/CatalogView.vue')
 const ProductDetailView = () => import('@/views/ProductDetailView.vue')
+const OrderRequestView = () => import('@/views/OrderRequestView.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,8 +28,7 @@ const router = createRouter({
     { path: '/catalogo/:id', name: 'product-detail', component: ProductDetailView, meta: { title: 'Producto' } },
 
     /* Solicitud de pedido: requiere sesión (se construye en MC-51) */
-    { path: '/solicitud', name: 'order-request', component: ComingSoonView, meta: { title: 'Solicitud de pedido', requiresAuth: true } },
-
+    { path: '/solicitud', name: 'order-request', component: OrderRequestView, meta: { title: 'Solicitud de pedido', requiresAuth: true } },
     /* Recursos apícolas */
     { path: '/recursos', name: 'resources', component: ComingSoonView, meta: { title: 'Recursos Apícolas' } },
     { path: '/recursos/actualidad', name: 'resources-news', component: ComingSoonView, meta: { title: 'Actualidad Apícola' } },
