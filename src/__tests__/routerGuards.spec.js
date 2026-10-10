@@ -51,7 +51,7 @@ describe('guards del router', () => {
     expect(router.currentRoute.value.name).toBe('home')
   })
 
-  it('la administradora puede entrar en el panel', async () => {
+  it('el administrador puede entrar en el panel', async () => {
     loginAs('ROLE_ADMIN')
 
     await router.push('/admin')
