@@ -19,6 +19,7 @@ const MyOrdersView = () => import('@/views/MyOrdersView.vue')
 const AdminView = () => import('@/views/AdminView.vue')
 const AdminOrdersView = () => import('@/views/AdminOrdersView.vue')
 const AdminProductsView = () => import('@/views/AdminProductsView.vue')
+const AdminProductFormView = () => import('@/views/AdminProductFormView.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -129,17 +130,17 @@ const router = createRouter({
           meta: { title: 'Productos · Panel' },
         },
         {
-          /* Formulario de alta (se construye en el siguiente paso de MC-52) */
+          /* Alta de producto */
           path: 'productos/nuevo',
           name: 'admin-product-new',
-          component: ComingSoonView,
+          component: AdminProductFormView,
           meta: { title: 'Nuevo producto · Panel' },
         },
         {
-          /* Formulario de edición: mismo formulario, con el id en la URL */
+          /* Edición: el mismo formulario, con el id en la URL */
           path: 'productos/:id/editar',
           name: 'admin-product-edit',
-          component: ComingSoonView,
+          component: AdminProductFormView,
           meta: { title: 'Editar producto · Panel' },
         },
         {
