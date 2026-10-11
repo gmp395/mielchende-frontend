@@ -6,6 +6,7 @@ import {
   validateEmail,
   validateMaxLength,
   validateNewPassword,
+  validatePrice,
   validateQuantity,
 } from '@/utils/validation'
 
@@ -32,5 +33,16 @@ describe('validation', () => {
   it('validateMaxLength avisa solo si se supera el límite', () => {
     expect(validateMaxLength('12345', 5, 'Demasiado largo')).toBe('')
     expect(validateMaxLength('123456', 5, 'Demasiado largo')).toBe('Demasiado largo')
+  })
+
+  it('validatePrice acepta coma o punto y rechaza vacíos, formatos raros y el cero', () => {
+    expect(validatePrice('8')).toBe('')
+    expect(validatePrice('8,50')).toBe('')
+    expect(validatePrice(' 8.5 ')).toBe('')
+    expect(validatePrice('')).toBe('Introduce el precio.')
+    expect(validatePrice('8,505')).toContain('precio válido')
+    expect(validatePrice('-3')).toContain('precio válido')
+    expect(validatePrice('ocho')).toContain('precio válido')
+    expect(validatePrice('0,00')).toBe('El precio debe ser mayor que cero.')
   })
 })
