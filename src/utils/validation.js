@@ -11,8 +11,21 @@ export const PASSWORD_MIN_LENGTH = 8
 export const PHONE_MAX_LENGTH = 20
 export const COMMENTS_MAX_LENGTH = 1000
 
+/*
+ * Límite de los campos de texto corto de un producto
+ * (nombre, formato, URL de imagen, temporada): columnas VARCHAR(255) en la BD.
+ */
+export const PRODUCT_TEXT_MAX_LENGTH = 255
+
 /* Formato básico de email: texto@texto.texto, sin espacios */
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+/*
+ * Formato de precio: hasta 6 cifras enteras y, opcionalmente,
+ * coma o punto seguido de 1 o 2 decimales ("8", "8,5", "8.50").
+ * Coincide con la columna del backend: DECIMAL(8, 2).
+ */
+const PRICE_PATTERN = /^\d{1,6}([.,]\d{1,2})?$/
 
 export function validateRequired(value, message) {
   return value.trim() ? '' : message
@@ -44,4 +57,16 @@ export function validateMaxLength(value, max, message) {
  */
 export function validateQuantity(value) {
   return Number.isInteger(value) && value >= 1 ? '' : 'Indica una cantidad de 1 o más.'
+}
+
+/*
+ * Precio de un producto, escrito como texto: admite coma o punto decimal.
+ * Debe tener formato de precio y ser mayor que cero (el backend usa @Positive).
+ */
+export function validatePrice(value) {
+  const price = value.trim()
+  if (!price) return 'Introduce el precio.'
+  if (!PRICE_PATTERN.test(price)) return 'Introduce un precio válido, por ejemplo 8,50.'
+  if (Number(price.replace(',', '.')) <= 0) return 'El precio debe ser mayor que cero.'
+  return ''
 }

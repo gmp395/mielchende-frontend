@@ -18,6 +18,8 @@ const OrderRequestView = () => import('@/views/OrderRequestView.vue')
 const MyOrdersView = () => import('@/views/MyOrdersView.vue')
 const AdminView = () => import('@/views/AdminView.vue')
 const AdminOrdersView = () => import('@/views/AdminOrdersView.vue')
+const AdminProductsView = () => import('@/views/AdminProductsView.vue')
+const AdminProductFormView = () => import('@/views/AdminProductFormView.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -122,11 +124,24 @@ const router = createRouter({
           meta: { title: 'Solicitudes · Panel' },
         },
         {
-          /* Se construye en MC-52 */
           path: 'productos',
           name: 'admin-products',
-          component: ComingSoonView,
+          component: AdminProductsView,
           meta: { title: 'Productos · Panel' },
+        },
+        {
+          /* Alta de producto */
+          path: 'productos/nuevo',
+          name: 'admin-product-new',
+          component: AdminProductFormView,
+          meta: { title: 'Nuevo producto · Panel' },
+        },
+        {
+          /* Edición: el mismo formulario, con el id en la URL */
+          path: 'productos/:id/editar',
+          name: 'admin-product-edit',
+          component: AdminProductFormView,
+          meta: { title: 'Editar producto · Panel' },
         },
         {
           /* Gestión de contenidos apícolas: fuera del PMV */
