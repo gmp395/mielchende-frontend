@@ -16,6 +16,8 @@ const CatalogView = () => import('@/views/CatalogView.vue')
 const ProductDetailView = () => import('@/views/ProductDetailView.vue')
 const OrderRequestView = () => import('@/views/OrderRequestView.vue')
 const MyOrdersView = () => import('@/views/MyOrdersView.vue')
+const AdminView = () => import('@/views/AdminView.vue')
+const AdminOrdersView = () => import('@/views/AdminOrdersView.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -99,12 +101,41 @@ const router = createRouter({
       component: MyOrdersView,
       meta: { title: 'Mis solicitudes', requiresAuth: true },
     },
-    /* Panel de administración: requiere rol ADMIN */
+
+    /*
+     * Panel de administración: requiere rol ADMIN.
+     * Ruta padre con AdminView (título y pestañas) y una ruta hija por sección.
+     * Las hijas heredan el meta del padre, así que el guard las protege a todas.
+     * /admin a secas redirige a Solicitudes.
+     */
     {
       path: '/admin',
       name: 'admin',
-      component: ComingSoonView,
+      component: AdminView,
+      redirect: { name: 'admin-orders' },
       meta: { title: 'Panel de administración', requiresAdmin: true },
+      children: [
+        {
+          path: 'solicitudes',
+          name: 'admin-orders',
+          component: AdminOrdersView,
+          meta: { title: 'Solicitudes · Panel' },
+        },
+        {
+          /* Se construye en MC-52 */
+          path: 'productos',
+          name: 'admin-products',
+          component: ComingSoonView,
+          meta: { title: 'Productos · Panel' },
+        },
+        {
+          /* Gestión de contenidos apícolas: fuera del PMV */
+          path: 'contenidos',
+          name: 'admin-content',
+          component: ComingSoonView,
+          meta: { title: 'Contenidos · Panel' },
+        },
+      ],
     },
 
     /* Páginas legales */

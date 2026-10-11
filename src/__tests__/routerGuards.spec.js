@@ -51,12 +51,29 @@ describe('guards del router', () => {
     expect(router.currentRoute.value.name).toBe('home')
   })
 
-  it('el administrador puede entrar en el panel', async () => {
+  /*
+   * /admin es una ruta padre que redirige a su primera sección,
+   * así que el administrador acaba en Solicitudes.
+   */
+  it('el administrador puede entrar en el panel y llega a Solicitudes', async () => {
     loginAs('ROLE_ADMIN')
 
     await router.push('/admin')
 
-    expect(router.currentRoute.value.name).toBe('admin')
+    expect(router.currentRoute.value.name).toBe('admin-orders')
+    expect(router.currentRoute.value.path).toBe('/admin/solicitudes')
+  })
+
+  /*
+   * Las rutas hijas no declaran requiresAdmin: lo heredan del padre /admin.
+   * Este test comprueba que esa herencia protege también a las secciones.
+   */
+  it('un cliente que entra directamente en una sección del panel va al inicio', async () => {
+    loginAs('ROLE_USER')
+
+    await router.push('/admin/productos')
+
+    expect(router.currentRoute.value.name).toBe('home')
   })
 
   it('un cliente con sesión puede entrar en Mis solicitudes', async () => {
