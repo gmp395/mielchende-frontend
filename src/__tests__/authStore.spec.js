@@ -71,6 +71,29 @@ describe('auth store', () => {
     expect(store.isAdmin).toBe(false)
   })
 
+  it('validToken devuelve el token cuando la sesión es válida', () => {
+    const token = makeToken({ sub: 'ana@test.com', roles: ['ROLE_USER'], exp: inOneHour() })
+    localStorage.setItem('mielchende_token', token)
+
+    const store = useAuthStore()
+
+    expect(store.validToken).toBe(token)
+  })
+
+  /*
+   * Caso del 401 en el catálogo: el token sigue guardado, pero está caducado.
+   * validToken debe ser null para que el cliente HTTP no lo envíe.
+   */
+  it('validToken devuelve null si el token guardado está caducado', () => {
+    const token = makeToken({ sub: 'ana@test.com', roles: ['ROLE_USER'], exp: oneHourAgo() })
+    localStorage.setItem('mielchende_token', token)
+
+    const store = useAuthStore()
+
+    expect(store.token).toBe(token)
+    expect(store.validToken).toBeNull()
+  })
+
   it('al cerrar sesión borra el token del store y de localStorage', async () => {
     const token = makeToken({ sub: 'ana@test.com', roles: ['ROLE_USER'], exp: inOneHour() })
     authRepository.login.mockResolvedValue({ token })
