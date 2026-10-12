@@ -8,27 +8,12 @@
 import { RouterLink } from 'vue-router'
 /* Logo importado desde assets: Vite lo procesa y los tests lo resuelven */
 import logoUrl from '@/assets/images/logo.png'
-
-/* Correo real de contacto del negocio */
-const CONTACT_EMAIL = 'apicolachende@gmail.com'
+/* Datos de contacto compartidos con la página de Contacto */
+import { CONTACT_EMAIL, LOCATION_LABEL, SOCIAL_LINKS } from '@/constants/contact'
+import SocialIcon from '@/components/common/SocialIcon.vue'
 
 /* Perfil de GitHub de la autora del proyecto */
 const AUTHOR_URL = 'https://github.com/gmp395'
-
-/*
- * Redes sociales del negocio.
- * Si una URL está vacía, esa red no se muestra (así no publicamos enlaces falsos).
- * "icon" indica qué dibujo SVG se pinta en el template.
- */
-const socialLinks = [
-  { icon: 'instagram', label: 'Instagram de Miel Chende', url: 'https://www.instagram.com/apichende/' },
-  { icon: 'facebook', label: 'Facebook de Miel Chende', url: 'https://www.facebook.com/apicola.chende' },
-  {
-    icon: 'youtube',
-    label: 'Canal de YouTube de Miel Chende',
-    url: 'https://www.youtube.com/@apicolachende1554',
-  },
-].filter((link) => link.url)
 
 /* Año actual para el copyright (se actualiza solo cada año) */
 const currentYear = new Date().getFullYear()
@@ -57,14 +42,9 @@ const currentYear = new Date().getFullYear()
           Proyecto apícola familiar en Cospeito, dentro de la Reserva de la Biosfera Terras do Miño.
         </p>
 
-        <!--
-          Redes sociales: solo se muestra la fila si hay alguna URL real.
-          Iconos de línea (estilo Lucide), coherentes con los de la cabecera.
-          stroke="currentColor" hace que el icono tome el color del texto,
-          así el hover:text-primary también lo colorea.
-        -->
-        <ul v-if="socialLinks.length" class="mt-3 flex gap-3 text-muted-foreground">
-          <li v-for="link in socialLinks" :key="link.icon">
+        <!-- Redes sociales: solo se muestra la fila si hay alguna URL real -->
+        <ul v-if="SOCIAL_LINKS.length" class="mt-3 flex gap-3 text-muted-foreground">
+          <li v-for="link in SOCIAL_LINKS" :key="link.icon">
             <a
               :href="link.url"
               target="_blank"
@@ -72,44 +52,22 @@ const currentYear = new Date().getFullYear()
               :aria-label="link.label"
               class="transition-colors hover:text-primary"
             >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="size-5"
-                aria-hidden="true"
-              >
-                <!-- Instagram -->
-                <template v-if="link.icon === 'instagram'">
-                  <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                  <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
-                </template>
-                <!-- Facebook -->
-                <template v-else-if="link.icon === 'facebook'">
-                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-                </template>
-                <!-- YouTube -->
-                <template v-else-if="link.icon === 'youtube'">
-                  <path
-                    d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"
-                  />
-                  <path d="m10 15 5-3-5-3z" />
-                </template>
-              </svg>
+              <SocialIcon :icon="link.icon" class="size-5" />
             </a>
           </li>
         </ul>
       </div>
 
-      <!-- Contacto -->
+      <!-- Contacto: el título lleva a la página de contacto completa -->
       <div>
-        <p class="eyebrow">Contacto</p>
+        <RouterLink
+          :to="{ name: 'contact' }"
+          class="eyebrow transition-colors hover:text-primary"
+        >
+          Contacto
+        </RouterLink>
         <ul class="mt-2 space-y-1.5 text-sm text-muted-foreground">
-          <li>Cospeito, Lugo (Galicia)</li>
+          <li>{{ LOCATION_LABEL }}</li>
           <li>
             <a :href="`mailto:${CONTACT_EMAIL}`" class="hover:text-primary">{{ CONTACT_EMAIL }}</a>
           </li>

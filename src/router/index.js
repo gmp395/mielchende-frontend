@@ -12,6 +12,7 @@ import { useAuthStore } from '@/stores/auth'
  */
 const ComingSoonView = () => import('@/views/ComingSoonView.vue')
 const HomeView = () => import('@/views/HomeView.vue')
+const ContactView = () => import('@/views/ContactView.vue')
 const AuthView = () => import('@/views/AuthView.vue')
 const CatalogView = () => import('@/views/CatalogView.vue')
 const ProductDetailView = () => import('@/views/ProductDetailView.vue')
@@ -27,7 +28,7 @@ const router = createRouter({
   routes: [
     /* Navegación principal */
     { path: '/', name: 'home', component: HomeView, meta: { title: 'Inicio' } },
-    { path: '/contacto', name: 'contact', component: ComingSoonView, meta: { title: 'Contacto' } },
+    { path: '/contacto', name: 'contact', component: ContactView, meta: { title: 'Contacto' } },
 
     /* Catálogo: listado y ficha de producto (público) */
     { path: '/catalogo', name: 'catalog', component: CatalogView, meta: { title: 'Catálogo' } },
