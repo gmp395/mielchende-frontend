@@ -13,6 +13,7 @@ import { useAuthStore } from '@/stores/auth'
 const ComingSoonView = () => import('@/views/ComingSoonView.vue')
 const HomeView = () => import('@/views/HomeView.vue')
 const ContactView = () => import('@/views/ContactView.vue')
+const BeesWorldView = () => import('@/views/BeesWorldView.vue')
 const AuthView = () => import('@/views/AuthView.vue')
 const CatalogView = () => import('@/views/CatalogView.vue')
 const ProductDetailView = () => import('@/views/ProductDetailView.vue')
@@ -68,7 +69,7 @@ const router = createRouter({
     {
       path: '/recursos/mundo-abejas',
       name: 'resources-bees',
-      component: ComingSoonView,
+      component: BeesWorldView,
       meta: { title: 'Mundo de las Abejas' },
     },
     {
