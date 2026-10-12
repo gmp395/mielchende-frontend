@@ -21,13 +21,13 @@ app.use(router)
 
 /*
  * Inyectamos en el cliente HTTP:
- *  - de dónde sacar el token (el store),
+ *  - de dónde sacar el token: solo el válido (un token caducado no se envía),
  *  - qué hacer ante un 401: cerrar sesión e ir al login,
  *    recordando la página en la que estaba para volver después.
  */
 const authStore = useAuthStore()
 configureHttpClient({
-  getToken: () => authStore.token,
+  getToken: () => authStore.validToken,
   onUnauthorized: () => {
     authStore.logout()
     router.push({ name: 'login', query: { redirect: router.currentRoute.value.fullPath } })

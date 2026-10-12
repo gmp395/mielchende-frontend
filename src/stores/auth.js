@@ -38,6 +38,14 @@ export const useAuthStore = defineStore('auth', () => {
   /* Getters: todo lo demás se deriva del token */
   const payload = computed(() => decodeJwt(token.value))
   const isAuthenticated = computed(() => !!payload.value && !isTokenExpired(payload.value))
+
+  /*
+   * Token que se puede enviar al backend: solo si la sesión es válida.
+   * Si está caducado devolvemos null, porque el backend rechaza con 401
+   * cualquier token inválido, incluso en rutas públicas como el catálogo.
+   */
+  const validToken = computed(() => (isAuthenticated.value ? token.value : null))
+
   const email = computed(() => (isAuthenticated.value ? payload.value.sub : null))
   const roles = computed(() => (isAuthenticated.value ? (payload.value.roles ?? []) : []))
   const isAdmin = computed(() => roles.value.includes('ROLE_ADMIN'))
@@ -66,5 +74,5 @@ export const useAuthStore = defineStore('auth', () => {
     setToken(null)
   }
 
-  return { token, isAuthenticated, email, roles, isAdmin, login, register, logout }
+  return { token, validToken, isAuthenticated, email, roles, isAdmin, login, register, logout }
 })
