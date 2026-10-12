@@ -31,9 +31,12 @@ Este repositorio contiene la aplicación en Vue que consume la [API del backend]
 
 ### Visitante
 
+- **Inicio** con la presentación del apiario y acceso al catálogo.
 - Catálogo y ficha de cada producto, con su disponibilidad (disponible o agotado hasta la próxima cosecha).
+- **Contacto**: correo, ubicación de referencia con enlace a Google Maps y redes sociales.
+- **Recursos apícolas**, con fotos reales del apiario: Actualidad apícola (remite a las redes sociales), Calendario apícola, Mundo de las abejas, Amenazas para las abejas y Guías prácticas.
 - Registro e inicio de sesión en una misma vista con dos pestañas.
-- Las secciones todavía no construidas muestran una vista "Próximamente".
+- El aviso legal y la política de privacidad muestran por ahora una vista "Próximamente".
 
 ### Cliente
 
@@ -67,6 +70,28 @@ Este repositorio contiene la aplicación en Vue que consume la [API del backend]
 
 Ningún componente llama a la API directamente. Las peticiones siguen siempre la misma cadena: **Componente → Repositorio → `httpClient` → API**.
 
+```mermaid
+flowchart LR
+    V["Vistas y componentes<br/>(views, components)"]
+    M["Mappers<br/>formulario ⇄ DTO"]
+    R["Repositorios<br/>un método por endpoint"]
+    H["httpClient<br/>token, errores y 401"]
+    API[("API REST<br/>Spring Boot")]
+    S["Store auth (Pinia)<br/>token y roles"]
+    G["Router<br/>guards de navegación"]
+
+    V --> M
+    V --> R
+    R --> H
+    H -- "fetch + Bearer" --> API
+    V --> S
+    G --> S
+    S -. "validToken (main.js)" .-> H
+    H -. "401: logout (main.js)" .-> S
+```
+
+**Cómo leerlo:** las flechas continuas son dependencias directas (quién llama a quién). Las discontinuas son las dos funciones que `main.js` inyecta en el `httpClient`, para que este no dependa del store: de dónde sacar el token y qué hacer ante un 401.
+
 ```
 src
 ├── api/          httpClient (único punto de acceso a la API) y repositorios
@@ -79,10 +104,10 @@ src
 └── views/        Una vista por pantalla
 ```
 
-- **`httpClient`**: añade el token (`Authorization: Bearer`), convierte cualquier error en un `ApiError` uniforme y, ante un 401, cierra la sesión y redirige al login.
+- **`httpClient`**: añade el token (`Authorization: Bearer`) solo si la sesión es válida, convierte cualquier error en un `ApiError` uniforme y, ante un 401, cierra la sesión y redirige al login.
 - **Repositorios** (`productRepository`, `orderRepository`, `adminOrderRepository`...): un método por endpoint, siguiendo el *Repository Pattern*.
 - **Mappers**: traducen entre los datos del formulario y el formato que espera la API. Si el backend cambiara un nombre de campo, solo habría que tocar el mapper.
-- **Store `auth`**: el token es la única fuente de verdad; el email y los roles se obtienen decodificando el JWT.
+- **Store `auth`**: el token es la única fuente de verdad; el email, los roles y la caducidad se obtienen decodificando el JWT. El getter `validToken` devuelve el token solo si no ha caducado.
 - **Guards del router**: `requiresAuth`, `requiresAdmin` y `guestOnly`. Las rutas del panel heredan `requiresAdmin` de la ruta padre `/admin`. Son una ayuda para la experiencia de usuario: la seguridad real la aplica el backend.
 
 ## Diseño
@@ -168,17 +193,22 @@ El recorrido principal registra un cliente nuevo, solicita un producto y comprue
 - **Solicitud de pedido en lugar de compra online**, por el modelo real del negocio.
 - **JavaScript en lugar de TypeScript**, para centrar el proyecto en Vue y en la arquitectura.
 - **Un único cliente HTTP** con gestión uniforme de errores y del 401.
+- **Nunca se envía un token caducado**: el backend rechaza con 401 cualquier token inválido, incluso en rutas públicas como el catálogo, así que el frontend comprueba la caducidad antes de enviarlo.
 - **Pinia** para el estado global, con el token como única fuente de verdad.
 - **Etiquetas de estado en constantes** y transformaciones (precios, fechas) fuera de las vistas.
 - **Una sola vista de acceso** con pestañas, y **un solo formulario** para crear y editar productos.
 - **El precio se escribe con coma o punto**, como es natural en español, y el mapper lo convierte a número.
 - **Imagen por defecto** para los productos sin imagen o con un enlace roto.
 - **E2E contra el backend real**, en lugar de simular la API.
+- **Fotos reales del apiario** en lugar de imágenes generadas, para que la web sea fiel a la realidad del negocio. Las rutas de las imágenes se enlazan con `:src` desde constantes, para que Vite no las convierta en imports.
+- **Actualidad apícola remite a las redes sociales** mientras no haya noticias en la base de datos, en lugar de mostrar noticias inventadas.
+- **`/recursos` redirige al primer apartado**, porque la sección no necesita página propia: se navega desde el menú.
 
 ## Próximos pasos
 
 - **Categorías de producto** y filtro en el catálogo, incluida la categoría "Para apicultores" (enjambres y reinas) con consulta de disponibilidad.
-- **Secciones de contenido**: inicio, historia, mundo de las abejas, formación apícola y contacto.
+- **Noticias gestionadas desde el panel de administración**, que convertirán Actualidad apícola en un listado.
+- **Aviso legal y política de privacidad**, con los datos reales del titular.
 - **Recorrido E2E del administrador.**
 - **Despliegue** en un servidor con HTTPS.
 
