@@ -15,6 +15,7 @@ const HomeView = () => import('@/views/HomeView.vue')
 const ContactView = () => import('@/views/ContactView.vue')
 const BeesWorldView = () => import('@/views/BeesWorldView.vue')
 const CalendarView = () => import('@/views/CalendarView.vue')
+const ThreatsView = () => import('@/views/ThreatsView.vue')
 const AuthView = () => import('@/views/AuthView.vue')
 const CatalogView = () => import('@/views/CatalogView.vue')
 const ProductDetailView = () => import('@/views/ProductDetailView.vue')
@@ -76,7 +77,7 @@ const router = createRouter({
     {
       path: '/recursos/amenazas',
       name: 'resources-threats',
-      component: ComingSoonView,
+      component: ThreatsView,
       meta: { title: 'Amenazas para las Abejas' },
     },
     {
