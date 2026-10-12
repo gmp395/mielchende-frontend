@@ -16,6 +16,7 @@ const ContactView = () => import('@/views/ContactView.vue')
 const BeesWorldView = () => import('@/views/BeesWorldView.vue')
 const CalendarView = () => import('@/views/CalendarView.vue')
 const ThreatsView = () => import('@/views/ThreatsView.vue')
+const NewsView = () => import('@/views/NewsView.vue')
 const AuthView = () => import('@/views/AuthView.vue')
 const CatalogView = () => import('@/views/CatalogView.vue')
 const ProductDetailView = () => import('@/views/ProductDetailView.vue')
@@ -59,7 +60,7 @@ const router = createRouter({
     {
       path: '/recursos/actualidad',
       name: 'resources-news',
-      component: ComingSoonView,
+      component: NewsView,
       meta: { title: 'Actualidad Apícola' },
     },
     {
