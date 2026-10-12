@@ -51,12 +51,16 @@ const router = createRouter({
       component: OrderRequestView,
       meta: { title: 'Solicitud de pedido', requiresAuth: true },
     },
-    /* Recursos apícolas */
+
+    /*
+     * Recursos apícolas.
+     * La sección no tiene página propia: se navega desde el menú a cada apartado.
+     * Si alguien escribe /recursos a mano, lo llevamos al primer apartado
+     * en lugar de a una página vacía.
+     */
     {
       path: '/recursos',
-      name: 'resources',
-      component: ComingSoonView,
-      meta: { title: 'Recursos Apícolas' },
+      redirect: { name: 'resources-news' },
     },
     {
       path: '/recursos/actualidad',
