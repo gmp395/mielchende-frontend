@@ -14,6 +14,7 @@ const ComingSoonView = () => import('@/views/ComingSoonView.vue')
 const HomeView = () => import('@/views/HomeView.vue')
 const ContactView = () => import('@/views/ContactView.vue')
 const BeesWorldView = () => import('@/views/BeesWorldView.vue')
+const CalendarView = () => import('@/views/CalendarView.vue')
 const AuthView = () => import('@/views/AuthView.vue')
 const CatalogView = () => import('@/views/CatalogView.vue')
 const ProductDetailView = () => import('@/views/ProductDetailView.vue')
@@ -63,7 +64,7 @@ const router = createRouter({
     {
       path: '/recursos/calendario',
       name: 'resources-calendar',
-      component: ComingSoonView,
+      component: CalendarView,
       meta: { title: 'Calendario Apícola' },
     },
     {
