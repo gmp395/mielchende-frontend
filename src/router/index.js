@@ -11,6 +11,7 @@ import { useAuthStore } from '@/stores/auth'
  * ComingSoonView es la vista temporal para las secciones aún no construidas.
  */
 const ComingSoonView = () => import('@/views/ComingSoonView.vue')
+const HomeView = () => import('@/views/HomeView.vue')
 const AuthView = () => import('@/views/AuthView.vue')
 const CatalogView = () => import('@/views/CatalogView.vue')
 const ProductDetailView = () => import('@/views/ProductDetailView.vue')
@@ -25,7 +26,7 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     /* Navegación principal */
-    { path: '/', name: 'home', component: ComingSoonView, meta: { title: 'Inicio' } },
+    { path: '/', name: 'home', component: HomeView, meta: { title: 'Inicio' } },
     { path: '/contacto', name: 'contact', component: ComingSoonView, meta: { title: 'Contacto' } },
 
     /* Catálogo: listado y ficha de producto (público) */
