@@ -32,18 +32,28 @@ afterEach(() => {
 })
 
 describe('HomeView', () => {
-  it('muestra el título y la foto de portada', async () => {
+  it('muestra el título, el subtítulo y la foto de portada', async () => {
     await mountHome()
 
-    expect(wrapper.find('h1').text()).toBe('Miel cruda de Terras do Miño')
-    expect(wrapper.find('img').attributes('src')).toBe('/images/banners/apicultor-ahumador.jpg')
+    expect(wrapper.find('h1').text()).toBe('Miel Chende')
+    expect(wrapper.text()).toContain('Miel cruda de Terras do Miño')
+
+    /* La primera imagen de la vista es la foto de portada */
+    const heroImage = wrapper.find('img')
+    expect(heroImage.attributes('src')).toBe('/images/banners/miel-portada.jpg')
+
+    /*
+     * La foto es contenido, no decoración: debe tener un texto alternativo
+     * para los lectores de pantalla.
+     */
+    expect(heroImage.attributes('alt')).toBeTruthy()
   })
 
   it('muestra los tres rasgos de la miel', async () => {
     await mountHome()
 
     expect(wrapper.findAll('li')).toHaveLength(3)
-    expect(wrapper.text()).toContain('Cruda y sin filtrar')
+    expect(wrapper.text()).toContain('Cruda y sin tratamientos térmicos')
   })
 
   it('los botones llevan al catálogo', async () => {
