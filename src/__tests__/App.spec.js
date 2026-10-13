@@ -30,7 +30,7 @@ describe('App (layout)', () => {
     await flushPromises()
 
     expect(wrapper.find('header').exists()).toBe(true)
-    expect(wrapper.find('main h1').text()).toBe('Miel cruda de Terras do Miño')
+    expect(wrapper.find('main h1').text()).toBe('Miel Chende')
     expect(wrapper.find('footer').exists()).toBe(true)
   })
 })

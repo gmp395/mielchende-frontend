@@ -1,6 +1,6 @@
 <script setup>
 /*
- * Página de inicio: portada con una foto real del apiario,
+ * Página de inicio: portada en dos columnas (texto y foto de la miel),
  * presentación breve de la miel y acceso al catálogo.
  * Es estática: no pide datos al backend.
  */
@@ -11,57 +11,48 @@ import { RouterLink } from 'vue-router'
  * Se enlazan con :src para que el compilador de Vue no las convierta
  * en un import: en los tests, Vitest no sirve la carpeta public.
  */
-const HERO_IMAGE = '/images/banners/apicultor-ahumador.jpg'
+const HERO_IMAGE = '/images/banners/miel-portada.jpg'
 const PROCESS_IMAGE = '/images/content/miel-colando.jpg'
 
 /* Rasgos de la miel, basados en lo que indica la etiqueta del tarro */
 const features = [
   {
-    title: 'Cruda y sin filtrar',
-    text: 'Extraída y envasada en frío, sin tratamientos térmicos, para conservar todas sus propiedades.',
+    title: 'Cruda y sin tratamientos térmicos',
+    text: 'Extraemos y envasamos la miel en frío, sin someterla a tratamientos térmicos. Así respetamos al máximo sus características naturales.',
   },
   {
     title: 'Una cosecha al año',
-    text: 'Trabajamos al ritmo de las abejas: cuando una miel se agota, vuelve con la siguiente cosecha.',
+    text: 'Nuestra miel depende de cada temporada y del trabajo de las abejas. Cuando se termina una cosecha, toca esperar a la siguiente.',
   },
   {
-    title: 'Terras do Miño',
-    text: 'Nuestras colmenas están en Cospeito (Lugo), dentro de la Reserva de la Biosfera Terras do Miño.',
+    title: 'De Cospeito, en Terras do Miño',
+    text: 'Nuestro apiario está en Cospeito, Lugo, dentro de la Reserva de la Biosfera Terras do Miño. Este es el entorno en el que cuidamos nuestras abejas y recogemos nuestra miel.',
   },
 ]
 </script>
 
 <template>
   <!--
-    Portada. isolate crea un contexto de apilamiento propio,
-    para que la imagen y el degradado (-z-10) queden detrás del texto
-    sin esconderse detrás del fondo de la página.
+    Portada en dos columnas: texto a la izquierda y foto a la derecha.
+    Por debajo de lg las columnas se apilan: primero el texto con el botón
+    y después la foto, para que el botón se vea sin hacer scroll en móvil.
   -->
-  <section class="relative isolate overflow-hidden">
-    <!-- alt vacío: la imagen es decorativa, el mensaje está en el texto -->
-    <img
-      :src="HERO_IMAGE"
-      alt=""
-      class="absolute inset-0 -z-10 size-full object-cover object-[65%_center]"
-      fetchpriority="high"
-    />
-    <!--
-      Degradado oscuro para que el texto claro se lea sobre la foto:
-      en móvil, de abajo hacia arriba; desde sm, de izquierda a derecha.
-    -->
+  <section class="surface-warm">
     <div
-      class="absolute inset-0 -z-10 bg-linear-to-t from-foreground/85 via-foreground/45 to-foreground/10 sm:bg-linear-to-r sm:from-foreground/80 sm:via-foreground/40 sm:to-transparent"
-      aria-hidden="true"
-    ></div>
-
-    <div class="container-page flex min-h-[70vh] flex-col justify-end py-16 sm:justify-center">
-      <div class="max-w-xl text-primary-foreground">
-        <p class="text-xs uppercase tracking-[0.18em] text-primary-foreground/85">
-          Apícola Chende · Cospeito, Lugo
-        </p>
-        <h1 class="mt-4 text-4xl sm:text-5xl lg:text-6xl">Miel cruda de Terras do Miño</h1>
-        <p class="mt-5 text-lg text-primary-foreground/90">
-          Miel artesanal de nuestro apiario familiar, recolectada una vez al año y envasada en frío.
+      class="container-page grid items-center gap-10 py-12 sm:py-16 lg:grid-cols-2 lg:gap-16 lg:py-20"
+    >
+      <div class="max-w-xl">
+        <p class="eyebrow">Apícola Chende · Cospeito, Lugo</p>
+        <h1 class="mt-4 text-5xl sm:text-6xl lg:text-7xl">Miel Chende</h1>
+        <!--
+          Subtítulo: es un párrafo y no un h2, porque continúa el título
+          en lugar de abrir una sección nueva.
+        -->
+        <p class="mt-4 text-2xl sm:text-3xl">Miel cruda de Terras do Miño</p>
+        <p class="mt-5 text-lg text-muted-foreground">
+          Miel de nuestro apiario familiar, elaborada al ritmo de las abejas y recolectada con
+          cuidado. Una miel natural, sin tratamientos térmicos, que conserva la esencia de su
+          origen.
         </p>
         <RouterLink
           :to="{ name: 'catalog' }"
@@ -70,14 +61,32 @@ const features = [
           Ver el catálogo
         </RouterLink>
       </div>
+
+      <!--
+        La foto es contenido (nuestra miel real), no un fondo decorativo,
+        por eso lleva un alt descriptivo.
+        aspect-4/5 mantiene la proporción vertical de la foto y object-cover
+        recorta lo mínimo si la proporción no coincide exactamente.
+        En móvil se limita el ancho y se centra; desde lg se alinea a la derecha.
+      -->
+      <img
+        :src="HERO_IMAGE"
+        alt="Miel cayendo en un tarro de cristal con relieve de celdas"
+        class="mx-auto aspect-4/5 w-full max-w-md rounded-xl object-cover lg:mx-0 lg:justify-self-end"
+        fetchpriority="high"
+      />
     </div>
   </section>
 
-  <!-- Nuestra miel: tres rasgos en tarjetas -->
+  <!-- Nuestra miel: introducción y tres rasgos en tarjetas -->
   <section class="container-page py-20">
     <header class="max-w-2xl">
       <p class="eyebrow">Nuestra miel</p>
-      <h2 class="mt-3 text-3xl sm:text-4xl">Del apiario a tu mesa</h2>
+      <h2 class="mt-3 text-3xl sm:text-4xl">Del cuidado de las abejas a tu mesa</h2>
+      <p class="mt-4 text-muted-foreground">
+        Nuestra miel nace del trabajo diario en el apiario, del respeto por los ciclos naturales y
+        de una forma de hacer las cosas sin prisas.
+      </p>
     </header>
 
     <ul class="mt-10 grid gap-6 sm:grid-cols-3">
@@ -103,17 +112,22 @@ const features = [
       />
       <div>
         <p class="eyebrow">Así trabajamos</p>
-        <h2 class="mt-3 text-3xl sm:text-4xl">Sin prisas y sin intermediarios</h2>
+        <h2 class="mt-3 text-3xl sm:text-4xl">Una forma de hacer las cosas, sin prisas</h2>
         <p class="mt-4 text-muted-foreground">
-          Cuidamos las colmenas, extraemos la miel y la envasamos nosotros mismos. Por eso no hay
-          carrito ni pago online: eliges lo que quieres, nos envías una solicitud y nos ponemos en
-          contacto contigo para preparar tu pedido.
+          Cuidamos nuestras colmenas, extraemos la miel y la envasamos nosotros mismos. Nos
+          ocupamos de todo el proceso, de las abejas al tarro, para ofrecerte una miel de nuestro
+          propio apiario.
         </p>
+        <p class="mt-4 text-muted-foreground">
+          No tenemos carrito de compra ni pago online. Si te interesa nuestra miel, envíanos tu
+          solicitud y hablaremos contigo para concretar el pedido.
+        </p>
+        <!-- Las solicitudes empiezan eligiendo producto en el catálogo -->
         <RouterLink
           :to="{ name: 'catalog' }"
           class="mt-6 inline-flex rounded-md border border-border bg-card px-5 py-2.5 transition-colors hover:bg-secondary"
         >
-          Hacer una solicitud
+          Quiero vuestra miel
         </RouterLink>
       </div>
     </div>
