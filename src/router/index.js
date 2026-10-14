@@ -27,6 +27,8 @@ const AdminView = () => import('@/views/AdminView.vue')
 const AdminOrdersView = () => import('@/views/AdminOrdersView.vue')
 const AdminProductsView = () => import('@/views/AdminProductsView.vue')
 const AdminProductFormView = () => import('@/views/AdminProductFormView.vue')
+const LegalNoticeView = () => import('@/views/LegalNoticeView.vue')
+const PrivacyView = () => import('@/views/PrivacyView.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -164,19 +166,20 @@ const router = createRouter({
       ],
     },
 
-    /* Páginas legales */
+     /* Páginas legales (con datos de ejemplo hasta publicar la web) */
     {
       path: '/aviso-legal',
       name: 'legal-notice',
-      component: ComingSoonView,
+      component: LegalNoticeView,
       meta: { title: 'Aviso legal' },
     },
     {
       path: '/privacidad',
       name: 'privacy',
-      component: ComingSoonView,
+      component: PrivacyView,
       meta: { title: 'Política de privacidad' },
     },
+    
   ],
 })
 
