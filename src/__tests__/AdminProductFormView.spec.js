@@ -36,6 +36,7 @@ const honey = {
   price: 8.5,
   imageUrl: null,
   seasonInfo: 'Cosecha 2026',
+  category: 'HONEY',
   status: 'AVAILABLE',
 }
 
@@ -57,6 +58,11 @@ async function mountForm(path) {
   wrapper = mount(AdminProductFormView, { global: { plugins: [pinia, router] } })
   await flushPromises()
   return wrapper
+}
+
+/* Botón de radio de una categoría concreta */
+function categoryRadio(category) {
+  return wrapper.find(`input[name="product-category"][value="${category}"]`)
 }
 
 beforeEach(() => {
@@ -85,6 +91,7 @@ describe('AdminProductFormView', () => {
 
     const text = wrapper.text()
     expect(text).toContain('Introduce el nombre.')
+    expect(text).toContain('Elige una categoría.')
     expect(text).toContain('Introduce el precio.')
     expect(text).toContain('Introduce una descripción.')
     expect(adminProductRepository.create).not.toHaveBeenCalled()
@@ -101,6 +108,8 @@ describe('AdminProductFormView', () => {
     const pushSpy = vi.spyOn(router, 'push')
 
     await wrapper.find('#product-name').setValue('Miel de castaño')
+    /* En un botón de radio, setValue() sin argumentos equivale a marcarlo */
+    await categoryRadio('HONEY').setValue()
     await wrapper.find('#product-format').setValue('1 kg')
     await wrapper.find('#product-price').setValue('14,5')
     await wrapper.find('#product-description').setValue('Miel oscura de otoño.')
@@ -114,6 +123,7 @@ describe('AdminProductFormView', () => {
       price: 14.5,
       imageUrl: null,
       seasonInfo: null,
+      category: 'HONEY',
       status: 'AVAILABLE',
     })
     expect(pushSpy).toHaveBeenCalledWith({ name: 'admin-products' })
@@ -127,6 +137,8 @@ describe('AdminProductFormView', () => {
     expect(productRepository.getById).toHaveBeenCalledWith('3')
     expect(wrapper.find('#product-name').element.value).toBe('Miel milflores')
     expect(wrapper.find('#product-price').element.value).toBe('8,50')
+    /* La categoría del producto aparece marcada */
+    expect(categoryRadio('HONEY').element.checked).toBe(true)
 
     await wrapper.find('#product-price').setValue('9')
     await wrapper.find('form').trigger('submit')
@@ -135,7 +147,7 @@ describe('AdminProductFormView', () => {
     /* El id llega de la URL, por eso es texto */
     expect(adminProductRepository.update).toHaveBeenCalledWith(
       '3',
-      expect.objectContaining({ name: 'Miel milflores', price: 9 }),
+      expect.objectContaining({ name: 'Miel milflores', price: 9, category: 'HONEY' }),
     )
   })
 

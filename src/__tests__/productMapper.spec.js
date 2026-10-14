@@ -13,15 +13,18 @@ const sampleProduct = {
   price: 8.5,
   imageUrl: null,
   seasonInfo: 'Cosecha 2026',
+  category: 'HONEY',
   status: 'AVAILABLE',
 }
 
 describe('productMapper', () => {
-  it('emptyForm crea un formulario vacío con el producto disponible', () => {
+  it('emptyForm crea un formulario vacío con el producto disponible y sin categoría', () => {
     const form = productMapper.emptyForm()
 
     expect(form.name).toBe('')
     expect(form.price).toBe('')
+    /* Sin categoría por defecto: la admin tiene que elegirla */
+    expect(form.category).toBe('')
     expect(form.status).toBe('AVAILABLE')
   })
 
@@ -31,6 +34,7 @@ describe('productMapper', () => {
     expect(form.price).toBe('8,50')
     expect(form.imageUrl).toBe('')
     expect(form.seasonInfo).toBe('Cosecha 2026')
+    expect(form.category).toBe('HONEY')
     /* El id no forma parte del formulario: va en la URL de la petición */
     expect(form).not.toHaveProperty('id')
   })
@@ -49,6 +53,7 @@ describe('productMapper', () => {
     expect(dto.price).toBe(12.5)
     expect(dto.imageUrl).toBeNull()
     expect(dto.seasonInfo).toBeNull()
+    expect(dto.category).toBe('HONEY')
     expect(dto.status).toBe('AVAILABLE')
   })
 })

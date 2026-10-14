@@ -1,5 +1,6 @@
 /*
- * Tests de la vista del catálogo: lista, estado agotado, error y catálogo vacío.
+ * Tests de la vista del catálogo: lista, estados, error, catálogo vacío
+ * y filtros por categoría.
  * El repositorio se sustituye por un mock: no se llama al backend.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
@@ -27,6 +28,7 @@ const sampleProducts = [
     price: 8,
     imageUrl: null,
     seasonInfo: null,
+    category: 'HONEY',
     status: 'AVAILABLE',
   },
   {
@@ -37,6 +39,7 @@ const sampleProducts = [
     price: 30,
     imageUrl: null,
     seasonInfo: 'Consultar disponibilidad en temporada',
+    category: 'BEEKEEPER_PRODUCTS',
     status: 'SOLD_OUT',
   },
 ]
@@ -51,6 +54,11 @@ async function mountCatalog() {
   wrapper = mount(CatalogView, { global: { plugins: [pinia, router] } })
   await flushPromises()
   return wrapper
+}
+
+/* Botón de filtro por su texto visible */
+function filterButton(label) {
+  return wrapper.findAll('button').find((button) => button.text() === label)
 }
 
 beforeEach(() => {
@@ -87,6 +95,16 @@ describe('CatalogView', () => {
     expect(cards[1].text()).toContain('Agotado')
   })
 
+  it('marca como "Próximamente" los productos que aún no se pueden solicitar', async () => {
+    productRepository.getAll.mockResolvedValue([
+      { ...sampleProducts[0], status: 'COMING_SOON' },
+    ])
+
+    await mountCatalog()
+
+    expect(wrapper.find('li').text()).toContain('Próximamente')
+  })
+
   it('si falla la carga muestra el error y permite reintentar', async () => {
     productRepository.getAll.mockRejectedValueOnce(
       new ApiError(0, 'No se ha podido conectar con el servidor.'),
@@ -110,5 +128,32 @@ describe('CatalogView', () => {
     await mountCatalog()
 
     expect(wrapper.text()).toContain('Ahora mismo no hay productos en el catálogo.')
+  })
+
+  it('el filtro muestra solo los productos de la categoría elegida', async () => {
+    productRepository.getAll.mockResolvedValue(sampleProducts)
+    await mountCatalog()
+
+    /* Al elegir una categoría, solo quedan sus productos y el botón queda activo */
+    await filterButton('Productos para el apicultor').trigger('click')
+
+    expect(wrapper.findAll('li')).toHaveLength(1)
+    expect(wrapper.find('li').text()).toContain('Reina fecundada')
+    expect(filterButton('Productos para el apicultor').attributes('aria-pressed')).toBe('true')
+
+    /* "Todos" vuelve a mostrar el catálogo completo */
+    await filterButton('Todos').trigger('click')
+
+    expect(wrapper.findAll('li')).toHaveLength(2)
+  })
+
+  it('si una categoría no tiene productos lo indica', async () => {
+    productRepository.getAll.mockResolvedValue(sampleProducts)
+    await mountCatalog()
+
+    await filterButton('Otros productos de la colmena').trigger('click')
+
+    expect(wrapper.findAll('li')).toHaveLength(0)
+    expect(wrapper.text()).toContain('No hay productos en esta categoría.')
   })
 })
