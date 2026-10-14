@@ -84,7 +84,7 @@ const features = [
       <p class="eyebrow">Nuestra miel</p>
       <h2 class="mt-3 text-3xl sm:text-4xl">Del cuidado de las abejas a tu mesa</h2>
       <p class="mt-4 text-muted-foreground">
-        Nuestra miel nace del trabajo diario en el apiario, del respeto por los ciclos naturales y
+        Nuestra miel nace del trabajo constante en el apiario, del respeto por los ciclos naturales y
         de una forma de hacer las cosas sin prisas.
       </p>
     </header>
@@ -114,8 +114,8 @@ const features = [
         <p class="eyebrow">Así trabajamos</p>
         <h2 class="mt-3 text-3xl sm:text-4xl">Una forma de hacer las cosas, sin prisas</h2>
         <p class="mt-4 text-muted-foreground">
-          Cuidamos nuestras colmenas, extraemos la miel y la envasamos nosotros mismos. Nos
-          ocupamos de todo el proceso, de las abejas al tarro, para ofrecerte una miel de nuestro
+          Cuidamos nuestras abejas, extraemos la miel y la envasamos nosotros mismos. Nos
+          ocupamos de todo el proceso, de la colmena al tarro, para ofrecerte una miel de nuestro
           propio apiario.
         </p>
         <p class="mt-4 text-muted-foreground">
