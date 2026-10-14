@@ -12,6 +12,7 @@ import { productRepository } from '@/api/productRepository'
 import { adminProductRepository } from '@/api/adminProductRepository'
 import { productMapper } from '@/mappers/productMapper'
 import { PRODUCT_STATUS, PRODUCT_STATUS_LABELS } from '@/constants/productStatus'
+import { PRODUCT_CATEGORY, PRODUCT_CATEGORY_LABELS } from '@/constants/productCategory'
 import {
   PRODUCT_TEXT_MAX_LENGTH,
   validateMaxLength,
@@ -33,6 +34,7 @@ const form = ref(productMapper.emptyForm())
 /* Un mensaje de error por campo (vacío = sin error) */
 const errors = reactive({
   name: '',
+  category: '',
   format: '',
   price: '',
   description: '',
@@ -43,9 +45,11 @@ const errors = reactive({
 /*
  * Id de cada campo en el HTML, en el orden en que aparecen.
  * Se usa para poner el foco en el primer campo con error.
+ * En la categoría, el id lo lleva el primer botón de radio.
  */
 const FIELD_IDS = {
   name: 'product-name',
+  category: 'product-category',
   format: 'product-format',
   price: 'product-price',
   description: 'product-description',
@@ -81,6 +85,7 @@ function validate() {
   errors.name =
     validateRequired(values.name, 'Introduce el nombre.') ||
     validateMaxLength(values.name, PRODUCT_TEXT_MAX_LENGTH, tooLongMessage)
+  errors.category = validateRequired(values.category, 'Elige una categoría.')
   errors.format =
     validateRequired(values.format, 'Introduce el formato, por ejemplo 500 g.') ||
     validateMaxLength(values.format, PRODUCT_TEXT_MAX_LENGTH, tooLongMessage)
@@ -156,6 +161,37 @@ if (isEdit) loadProduct()
           hint="Por ejemplo, Miel de castaño."
         />
 
+        <!--
+          Categoría: botones de radio, como la disponibilidad.
+          aria-describedby enlaza el mensaje de error con el grupo,
+          para que el lector de pantalla lo lea al entrar en él.
+        -->
+        <fieldset
+          :aria-invalid="errors.category ? 'true' : 'false'"
+          :aria-describedby="errors.category ? 'product-category-error' : undefined"
+        >
+          <legend class="text-sm font-medium">Categoría</legend>
+          <div class="mt-2 flex flex-wrap gap-x-6 gap-y-2">
+            <label
+              v-for="(category, index) in Object.values(PRODUCT_CATEGORY)"
+              :key="category"
+              class="flex items-center gap-2"
+            >
+              <input
+                :id="index === 0 ? 'product-category' : undefined"
+                v-model="form.category"
+                type="radio"
+                name="product-category"
+                :value="category"
+              />
+              {{ PRODUCT_CATEGORY_LABELS[category] }}
+            </label>
+          </div>
+          <p v-if="errors.category" id="product-category-error" class="mt-1.5 text-sm text-destructive">
+            {{ errors.category }}
+          </p>
+        </fieldset>
+
         <FormField
           id="product-format"
           v-model="form.format"
@@ -217,7 +253,7 @@ if (isEdit) loadProduct()
           hint="Por ejemplo, Cosecha de verano 2026."
         />
 
-        <!-- fieldset + legend: agrupa las dos opciones bajo una misma pregunta -->
+        <!-- fieldset + legend: agrupa las opciones bajo una misma pregunta -->
         <fieldset>
           <legend class="text-sm font-medium">Disponibilidad</legend>
           <div class="mt-2 flex flex-wrap gap-6">

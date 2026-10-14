@@ -20,7 +20,7 @@ const products = ref([])
 const isLoading = ref(true)
 const errorMessage = ref('')
 
-/* Id del producto cuyo estado se está guardando (para desactivar su botón) */
+/* Id del producto cuyo estado se está guardando (para desactivar su selector) */
 const updatingProductId = ref(null)
 
 /* Producto pendiente de confirmar el borrado (null = diálogo cerrado) */
@@ -50,25 +50,22 @@ function showMessage(message, isError = false) {
   actionIsError.value = isError
 }
 
-/* Estado contrario al actual: disponible ↔ agotado */
-function oppositeStatus(product) {
-  return product.status === PRODUCT_STATUS.AVAILABLE
-    ? PRODUCT_STATUS.SOLD_OUT
-    : PRODUCT_STATUS.AVAILABLE
-}
-
 /*
- * Cambia la disponibilidad con un clic (PATCH).
+ * Cambia la disponibilidad al estado elegido (PATCH).
  * Se sustituye el producto por la versión que devuelve el backend.
+ * selectElement (opcional): el desplegable de la fila. El navegador lo cambia
+ * antes de guardar; si el guardado falla, lo devolvemos al estado real,
+ * porque los datos no cambian y Vue no tendría nada que repintar.
  */
-async function toggleStatus(product) {
+async function changeStatus(product, newStatus, selectElement = null) {
   updatingProductId.value = product.id
   conflictProduct.value = null
   try {
-    const updated = await adminProductRepository.updateStatus(product.id, oppositeStatus(product))
+    const updated = await adminProductRepository.updateStatus(product.id, newStatus)
     products.value = products.value.map((item) => (item.id === updated.id ? updated : item))
     showMessage(`${updated.name} (${updated.format}): ${PRODUCT_STATUS_LABELS[updated.status]}.`)
   } catch (error) {
+    if (selectElement) selectElement.value = product.status
     showMessage(error.message, true)
   } finally {
     updatingProductId.value = null
@@ -100,8 +97,8 @@ async function confirmDelete() {
         `${product.name} (${product.format}) no se puede borrar porque tiene solicitudes asociadas.`,
         true,
       )
-      /* Solo tiene sentido ofrecer el atajo si todavía está disponible */
-      if (product.status === PRODUCT_STATUS.AVAILABLE) conflictProduct.value = product
+      /* Solo tiene sentido ofrecer el atajo si todavía no está agotado */
+      if (product.status !== PRODUCT_STATUS.SOLD_OUT) conflictProduct.value = product
     } else {
       showMessage(error.message, true)
     }
@@ -157,7 +154,7 @@ loadProducts()
             v-if="conflictProduct"
             type="button"
             class="mt-3 rounded-md border border-border bg-card px-4 py-2 text-foreground hover:bg-secondary"
-            @click="toggleStatus(conflictProduct)"
+            @click="changeStatus(conflictProduct, PRODUCT_STATUS.SOLD_OUT)"
           >
             Marcar como agotado
           </button>
@@ -191,7 +188,7 @@ loadProducts()
 
             <!--
               Acciones. El aria-label incluye el producto, porque con varias filas
-              un lector de pantalla oiría muchos botones con el mismo texto.
+              un lector de pantalla oiría muchos controles con el mismo texto.
             -->
             <div class="flex flex-wrap gap-2">
               <RouterLink
@@ -201,15 +198,24 @@ loadProducts()
               >
                 Editar
               </RouterLink>
-              <button
-                type="button"
-                class="rounded-md border border-border px-3 py-1.5 text-sm hover:bg-secondary disabled:opacity-50"
+
+              <!--
+                Disponibilidad: se guarda en cuanto se elige otra opción.
+                :value (y no v-model): el estado solo cambia en los datos
+                cuando el backend confirma el guardado.
+              -->
+              <select
+                :value="product.status"
                 :disabled="updatingProductId === product.id"
-                :aria-label="`Marcar ${product.name} (${product.format}) como ${PRODUCT_STATUS_LABELS[oppositeStatus(product)].toLowerCase()}`"
-                @click="toggleStatus(product)"
+                :aria-label="`Disponibilidad de ${product.name} (${product.format})`"
+                class="rounded-md border border-border bg-card px-3 py-1.5 text-sm hover:bg-secondary disabled:opacity-50"
+                @change="changeStatus(product, $event.target.value, $event.target)"
               >
-                Marcar como {{ PRODUCT_STATUS_LABELS[oppositeStatus(product)].toLowerCase() }}
-              </button>
+                <option v-for="status in Object.values(PRODUCT_STATUS)" :key="status" :value="status">
+                  {{ PRODUCT_STATUS_LABELS[status] }}
+                </option>
+              </select>
+
               <button
                 type="button"
                 class="rounded-md border border-destructive/40 px-3 py-1.5 text-sm text-destructive hover:bg-destructive/10"
@@ -219,7 +225,7 @@ loadProducts()
                 Borrar
               </button>
             </div>
-          </li>
+                      </li>
         </ul>
       </template>
     </div>

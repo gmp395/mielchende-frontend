@@ -8,7 +8,10 @@
 import { PRODUCT_STATUS } from '@/constants/productStatus'
 
 export const productMapper = {
-  /* Formulario vacío para crear un producto: disponible por defecto */
+  /*
+   * Formulario vacío para crear un producto: disponible por defecto.
+   * La categoría empieza vacía para obligar a elegirla conscientemente.
+   */
   emptyForm() {
     return {
       name: '',
@@ -17,6 +20,7 @@ export const productMapper = {
       price: '',
       imageUrl: '',
       seasonInfo: '',
+      category: '',
       status: PRODUCT_STATUS.AVAILABLE,
     }
   },
@@ -34,6 +38,7 @@ export const productMapper = {
       price: Number(product.price).toFixed(2).replace('.', ','),
       imageUrl: product.imageUrl ?? '',
       seasonInfo: product.seasonInfo ?? '',
+      category: product.category ?? '',
       status: product.status,
     }
   },
@@ -53,6 +58,7 @@ export const productMapper = {
       price: Number(form.price.trim().replace(',', '.')),
       imageUrl: imageUrl || null,
       seasonInfo: seasonInfo || null,
+      category: form.category,
       status: form.status,
     }
   },

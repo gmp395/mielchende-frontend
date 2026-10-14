@@ -37,9 +37,18 @@ const honey = {
   price: 8.5,
   imageUrl: null,
   seasonInfo: null,
+  category: 'HONEY',
   status: 'AVAILABLE',
 }
-const propolis = { ...honey, id: 2, name: 'Propóleo', format: 'Unidad', price: 6, status: 'SOLD_OUT' }
+const propolis = {
+  ...honey,
+  id: 2,
+  name: 'Propóleo',
+  format: 'Unidad',
+  price: 6,
+  category: 'HIVE_PRODUCTS',
+  status: 'SOLD_OUT',
+}
 
 let pinia
 let wrapper
@@ -60,6 +69,11 @@ async function mountAdminProducts() {
   wrapper = mount(AdminProductsView, { global: { plugins: [pinia, router] } })
   await flushPromises()
   return wrapper
+}
+
+/* Desplegable de disponibilidad del producto indicado */
+function statusSelect(product) {
+  return wrapper.find(`[aria-label="Disponibilidad de ${product.name} (${product.format})"]`)
 }
 
 /* Abre el diálogo de borrado del producto indicado */
@@ -100,19 +114,45 @@ describe('AdminProductsView', () => {
     expect(text).toContain('8,50')
     expect(text).toContain('Disponible')
     expect(text).toContain('Agotado')
+    /* El desplegable muestra el estado actual de cada producto */
+    expect(statusSelect(honey).element.value).toBe('AVAILABLE')
+    expect(statusSelect(propolis).element.value).toBe('SOLD_OUT')
   })
 
-  it('marca un producto como agotado y lo confirma', async () => {
+  it('marca un producto como agotado desde el desplegable y lo confirma', async () => {
     adminProductRepository.updateStatus.mockResolvedValue({ ...honey, status: 'SOLD_OUT' })
     await mountAdminProducts()
 
-    await wrapper
-      .find('[aria-label="Marcar Miel milflores (500 g) como agotado"]')
-      .trigger('click')
+    /* En un <select>, setValue elige la opción y dispara el evento change */
+    await statusSelect(honey).setValue('SOLD_OUT')
     await flushPromises()
 
     expect(adminProductRepository.updateStatus).toHaveBeenCalledWith(1, 'SOLD_OUT')
     expect(wrapper.find('[role="status"]').text()).toBe('Miel milflores (500 g): Agotado.')
+  })
+
+  it('marca un producto como "Próximamente"', async () => {
+    adminProductRepository.updateStatus.mockResolvedValue({ ...honey, status: 'COMING_SOON' })
+    await mountAdminProducts()
+
+    await statusSelect(honey).setValue('COMING_SOON')
+    await flushPromises()
+
+    expect(adminProductRepository.updateStatus).toHaveBeenCalledWith(1, 'COMING_SOON')
+    expect(wrapper.find('[role="status"]').text()).toBe('Miel milflores (500 g): Próximamente.')
+  })
+
+  it('si falla el guardado, el desplegable vuelve al estado real y se avisa', async () => {
+    adminProductRepository.updateStatus.mockRejectedValue(
+      new ApiError(0, 'No se ha podido conectar con el servidor.'),
+    )
+    await mountAdminProducts()
+
+    await statusSelect(honey).setValue('SOLD_OUT')
+    await flushPromises()
+
+    expect(statusSelect(honey).element.value).toBe('AVAILABLE')
+    expect(wrapper.find('[role="alert"]').text()).toContain('No se ha podido conectar')
   })
 
   it('borra un producto tras confirmarlo en el diálogo', async () => {
