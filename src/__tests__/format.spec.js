@@ -2,7 +2,7 @@
  * Tests de las utilidades de formato.
  */
 import { describe, it, expect } from 'vitest'
-import { formatDate, formatPrice } from '@/utils/format'
+import { formatDate, formatPrice, PRICE_ON_REQUEST_LABEL } from '@/utils/format'
 
 describe('formatPrice', () => {
   /*
@@ -16,6 +16,12 @@ describe('formatPrice', () => {
 
   it('acepta también el precio como texto', () => {
     expect(formatPrice('15.00')).toMatch(/^15,00\s€$/)
+  })
+
+  it('sin precio (null o undefined) muestra "Consultar precio"', () => {
+    expect(formatPrice(null)).toBe(PRICE_ON_REQUEST_LABEL)
+    expect(formatPrice(undefined)).toBe(PRICE_ON_REQUEST_LABEL)
+    expect(PRICE_ON_REQUEST_LABEL).toBe('Consultar precio')
   })
 })
 

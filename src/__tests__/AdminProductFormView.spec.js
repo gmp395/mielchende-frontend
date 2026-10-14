@@ -92,7 +92,6 @@ describe('AdminProductFormView', () => {
     const text = wrapper.text()
     expect(text).toContain('Introduce el nombre.')
     expect(text).toContain('Elige una categoría.')
-    expect(text).toContain('Introduce el precio.')
     expect(text).toContain('Introduce una descripción.')
     expect(adminProductRepository.create).not.toHaveBeenCalled()
   })

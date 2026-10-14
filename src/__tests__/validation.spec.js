@@ -35,11 +35,13 @@ describe('validation', () => {
     expect(validateMaxLength('123456', 5, 'Demasiado largo')).toBe('Demasiado largo')
   })
 
-  it('validatePrice acepta coma o punto y rechaza vacíos, formatos raros y el cero', () => {
+  it('validatePrice acepta coma o punto, admite vacío y rechaza formatos raros y el cero', () => {
     expect(validatePrice('8')).toBe('')
     expect(validatePrice('8,50')).toBe('')
     expect(validatePrice(' 8.5 ')).toBe('')
-    expect(validatePrice('')).toBe('Introduce el precio.')
+    /* Vacío es válido: significa "precio a consultar" */
+    expect(validatePrice('')).toBe('')
+    expect(validatePrice('   ')).toBe('')
     expect(validatePrice('8,505')).toContain('precio válido')
     expect(validatePrice('-3')).toContain('precio válido')
     expect(validatePrice('ocho')).toContain('precio válido')

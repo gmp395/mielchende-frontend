@@ -61,11 +61,13 @@ export function validateQuantity(value) {
 
 /*
  * Precio de un producto, escrito como texto: admite coma o punto decimal.
- * Debe tener formato de precio y ser mayor que cero (el backend usa @Positive).
+ * Es opcional: vacío significa "precio a consultar".
+ * Si se escribe, debe tener formato de precio y ser mayor que cero
+ * (el backend usa @Positive, que solo valida cuando hay valor).
  */
 export function validatePrice(value) {
   const price = value.trim()
-  if (!price) return 'Introduce el precio.'
+  if (!price) return ''
   if (!PRICE_PATTERN.test(price)) return 'Introduce un precio válido, por ejemplo 8,50.'
   if (Number(price.replace(',', '.')) <= 0) return 'El precio debe ser mayor que cero.'
   return ''

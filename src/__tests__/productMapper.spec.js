@@ -56,4 +56,14 @@ describe('productMapper', () => {
     expect(dto.category).toBe('HONEY')
     expect(dto.status).toBe('AVAILABLE')
   })
+
+  it('un producto sin precio pasa a campo vacío, y un campo vacío vuelve a null', () => {
+    /* API → formulario: null se muestra como campo vacío */
+    const form = productMapper.toForm({ ...sampleProduct, price: null })
+    expect(form.price).toBe('')
+
+    /* Formulario → API: vacío (o solo espacios) se envía como null */
+    const dto = productMapper.toRequestDto({ ...form, price: '  ' })
+    expect(dto.price).toBeNull()
+  })
 })
