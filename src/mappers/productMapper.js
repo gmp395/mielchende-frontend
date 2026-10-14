@@ -28,14 +28,15 @@ export const productMapper = {
   /*
    * Producto de la API → formulario (al editar).
    * El precio se muestra con dos decimales y coma: 8.5 → "8,50".
-   * Los opcionales null pasan a texto vacío, porque un input no muestra null.
+   * Los opcionales null (también el precio) pasan a texto vacío,
+   * porque un input no muestra null.
    */
   toForm(product) {
     return {
       name: product.name,
       description: product.description,
       format: product.format,
-      price: Number(product.price).toFixed(2).replace('.', ','),
+      price: product.price == null ? '' : Number(product.price).toFixed(2).replace('.', ','),
       imageUrl: product.imageUrl ?? '',
       seasonInfo: product.seasonInfo ?? '',
       category: product.category ?? '',
@@ -47,15 +48,17 @@ export const productMapper = {
    * Formulario → ProductRequestDto del backend (al crear o editar).
    * Quita espacios, convierte el precio a número (admite coma o punto)
    * y envía null en los opcionales vacíos.
+   * Precio vacío → null: el producto se mostrará como "Consultar precio".
    */
   toRequestDto(form) {
+    const price = form.price.trim()
     const imageUrl = form.imageUrl.trim()
     const seasonInfo = form.seasonInfo.trim()
     return {
       name: form.name.trim(),
       description: form.description.trim(),
       format: form.format.trim(),
-      price: Number(form.price.trim().replace(',', '.')),
+      price: price ? Number(price.replace(',', '.')) : null,
       imageUrl: imageUrl || null,
       seasonInfo: seasonInfo || null,
       category: form.category,

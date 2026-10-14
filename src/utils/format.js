@@ -10,7 +10,15 @@
  */
 const priceFormatter = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' })
 
+/* Texto que se muestra cuando un producto no tiene precio (null) */
+export const PRICE_ON_REQUEST_LABEL = 'Consultar precio'
+
+/*
+ * Precio para mostrar: "8,00 €", o "Consultar precio" si no tiene.
+ * value == null (con dos iguales) cubre a la vez null y undefined.
+ */
 export function formatPrice(value) {
+  if (value == null) return PRICE_ON_REQUEST_LABEL
   return priceFormatter.format(Number(value))
 }
 

@@ -200,12 +200,12 @@ if (isEdit) loadProduct()
           hint="Por ejemplo, 500 g o 1 kg."
         />
 
-        <FormField
+                <FormField
           id="product-price"
           v-model="form.price"
-          label="Precio (€)"
+          label="Precio (€) (opcional)"
           :error="errors.price"
-          hint="Puedes usar coma o punto: 8,50."
+          hint="Puedes usar coma o punto: 8,50. Si se deja vacío, se mostrará «Consultar precio»."
         />
 
         <!-- Descripción: textarea con la misma accesibilidad que FormField -->
