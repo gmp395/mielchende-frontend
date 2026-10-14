@@ -122,6 +122,15 @@ describe('OrderRequestView', () => {
     })
     expect(wrapper.find('[role="dialog"]').exists()).toBe(true)
   })
+     /* MC-68: el formulario informa de las formas de pago, sin publicar ningún dato de pago */
+  it('informa de las formas de pago antes de enviar la solicitud', async () => {
+    await mountOrderRequest()
+
+    const text = wrapper.find('form').text()
+    expect(text).toContain('Formas de pago')
+    expect(text).toContain('Bizum o transferencia bancaria')
+    expect(text).toContain('te enviaremos un correo electrónico con todos los datos necesarios para realizar el pago')
+  })
 
   it('si un producto se agota al enviar, avisa y recarga la lista', async () => {
     orderRepository.create.mockRejectedValue(new ApiError(409, 'Product sold out'))

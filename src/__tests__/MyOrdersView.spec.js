@@ -87,6 +87,26 @@ describe('MyOrdersView', () => {
     expect(wrapper.find('a[href="/catalogo"]').exists()).toBe(true)
   })
 
+    /*
+   * MC-68: solo las solicitudes en Confirmado avisan de que los datos de pago
+   * están en el email. Se comprueba cada tarjeta por separado.
+   */
+  it('solo en las solicitudes confirmadas avisa de que los datos de pago están en el email', async () => {
+    orderRepository.getMine.mockResolvedValue([
+      { ...sampleOrder, id: 9, status: 'SHIPPED' },
+      { ...sampleOrder, id: 8, status: 'RECEIVED' },
+      { ...sampleOrder, id: 7, status: 'CONFIRMED' },
+    ])
+
+    await mountMyOrders()
+
+    const cards = wrapper.findAll('article')
+    expect(cards).toHaveLength(3)
+    expect(cards[0].text()).not.toContain('Revisa tu email')
+    expect(cards[1].text()).not.toContain('Revisa tu email')
+    expect(cards[2].text()).toContain('Revisa tu email: te hemos enviado los datos para el pago.')
+  })
+  
   it('si falla la carga muestra el error', async () => {
     orderRepository.getMine.mockRejectedValue(
       new ApiError(0, 'No se ha podido conectar con el servidor.'),
