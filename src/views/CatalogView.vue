@@ -9,6 +9,7 @@ import { computed, ref } from 'vue'
 import { productRepository } from '@/api/productRepository'
 import { PRODUCT_CATEGORY, PRODUCT_CATEGORY_LABELS } from '@/constants/productCategory'
 import ProductCard from '@/components/catalog/ProductCard.vue'
+import { sortByCategory } from '@/utils/sortProducts'
 
 const products = ref([])
 const isLoading = ref(true)
@@ -43,7 +44,8 @@ async function loadProducts() {
   isLoading.value = true
   errorMessage.value = ''
   try {
-    products.value = await productRepository.getAll()
+        /* Ordenados por categoría: primero las mieles */
+    products.value = sortByCategory(await productRepository.getAll())
   } catch (error) {
     errorMessage.value = error.message
   } finally {

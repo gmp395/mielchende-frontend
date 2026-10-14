@@ -15,6 +15,7 @@ import { formatPrice } from '@/utils/format'
 import ProductImage from '@/components/catalog/ProductImage.vue'
 import ProductStatusBadge from '@/components/catalog/ProductStatusBadge.vue'
 import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
+import { sortByCategory } from '@/utils/sortProducts'
 
 const products = ref([])
 const isLoading = ref(true)
@@ -37,7 +38,8 @@ async function loadProducts() {
   isLoading.value = true
   errorMessage.value = ''
   try {
-    products.value = await productRepository.getAll()
+  /* Mismo orden que el catálogo: el admin ve los productos como el cliente */
+  products.value = sortByCategory(await productRepository.getAll())
   } catch (error) {
     errorMessage.value = error.message
   } finally {
