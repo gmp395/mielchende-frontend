@@ -1,13 +1,17 @@
 <script setup>
 /*
  * Actualidad apícola (Recursos apícolas).
- * De momento no hay noticias en la base de datos: la actualidad del apiario
- * se publica en las redes sociales, así que esta página remite a ellas.
- * Cuando el admin pueda publicar noticias, esta vista pasará a ser el listado.
+ * Muestra los artículos que el admin publica desde el panel (Contenidos)
+ * y, debajo, remite a las redes sociales, donde se cuenta el día a día.
+ * Si no hay artículos o la API falla, la página sigue teniendo contenido:
+ * las redes y la llamada a la acción no dependen del backend.
  */
+import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import SocialIcon from '@/components/common/SocialIcon.vue'
 import { SOCIAL_LINKS } from '@/constants/contact'
+import { articleRepository } from '@/api/articleRepository'
+import { formatDate } from '@/utils/format'
 
 /*
  * Ruta de la foto (carpeta public).
@@ -15,7 +19,7 @@ import { SOCIAL_LINKS } from '@/constants/contact'
  */
 const BANNER_IMAGE = '/images/banners/colmenas-en-fila.jpg'
 
-/* Qué tipo de contenido publicamos, para que se sepa qué se va a encontrar */
+/* Qué tipo de contenido publicamos en redes, para que se sepa qué se va a encontrar */
 const topics = [
   {
     title: 'Novedades del apiario',
@@ -30,6 +34,36 @@ const topics = [
     text: 'Imágenes del apiario y de la cosecha, y vídeos de nuestro trabajo en el canal de YouTube.',
   },
 ]
+
+/* Artículos publicados (el backend ya los envía del más reciente al más antiguo) */
+const articles = ref([])
+const isLoading = ref(true)
+const errorMessage = ref('')
+
+/*
+ * Ids de los artículos cuya imagen no ha cargado (enlace roto).
+ * Si falla, se oculta la imagen en lugar de mostrar el icono de imagen rota.
+ */
+const brokenImageIds = ref(new Set())
+
+async function loadArticles() {
+  isLoading.value = true
+  errorMessage.value = ''
+  try {
+    articles.value = await articleRepository.getPublished()
+  } catch (error) {
+    errorMessage.value = error.message
+  } finally {
+    isLoading.value = false
+  }
+}
+
+function hideBrokenImage(articleId) {
+  brokenImageIds.value = new Set(brokenImageIds.value).add(articleId)
+}
+
+/* Petición inicial: directamente en <script setup>, al crearse el componente */
+loadArticles()
 </script>
 
 <template>
@@ -38,14 +72,70 @@ const topics = [
       <p class="eyebrow">Recursos apícolas</p>
       <h1 class="mt-3 text-4xl">Actualidad apícola</h1>
       <p class="mt-4 text-muted-foreground">
-        Lo que pasa en el apiario lo contamos casi a diario en nuestras redes sociales. Síguenos
-        para no perderte nada.
+        Noticias del apiario y de la temporada. El día a día lo contamos también en nuestras
+        redes sociales.
       </p>
     </header>
 
-    <!-- Qué publicamos -->
-    <section class="mt-14" aria-labelledby="topics-title">
-      <h2 id="topics-title" class="text-3xl">Qué vas a encontrar</h2>
+    <!-- Artículos publicados desde el panel -->
+    <section class="mt-14" aria-labelledby="news-title">
+      <h2 id="news-title" class="text-3xl">Últimas noticias</h2>
+
+      <!-- aria-live: el lector de pantalla anuncia la carga, el error o el resultado -->
+      <div class="mt-8" aria-live="polite">
+        <p v-if="isLoading" class="text-muted-foreground">Cargando noticias…</p>
+
+        <div v-else-if="errorMessage" role="alert" class="rounded-lg bg-destructive/10 p-5">
+          <p class="text-destructive">No se han podido cargar las noticias. {{ errorMessage }}</p>
+          <button
+            type="button"
+            class="mt-3 rounded-md border border-border bg-card px-4 py-2 text-sm hover:bg-secondary"
+            @click="loadArticles"
+          >
+            Reintentar
+          </button>
+        </div>
+
+        <p v-else-if="articles.length === 0" class="text-muted-foreground">
+          Todavía no hay noticias publicadas. Mientras tanto, puedes seguirnos en redes.
+        </p>
+
+        <div v-else class="space-y-10">
+          <!-- article: contenido independiente, con sentido por sí mismo (HTML semántico) -->
+          <article
+            v-for="article in articles"
+            :key="article.id"
+            class="overflow-hidden rounded-xl border border-border bg-card"
+          >
+            <img
+              v-if="article.imageUrl && !brokenImageIds.has(article.id)"
+              :src="article.imageUrl"
+              :alt="`Imagen de la noticia «${article.title}»`"
+              class="aspect-video w-full object-cover"
+              loading="lazy"
+              @error="hideBrokenImage(article.id)"
+            />
+            <div class="p-6 md:p-8">
+              <!-- time con datetime: la fecha legible por personas y por máquinas -->
+              <time :datetime="article.publishedAt" class="text-sm text-muted-foreground">
+                {{ formatDate(article.publishedAt) }}
+              </time>
+              <h3 class="mt-2 text-2xl">{{ article.title }}</h3>
+              <p class="mt-3 font-medium">{{ article.summary }}</p>
+              <!--
+                whitespace-pre-line respeta los saltos de línea del texto.
+                Se pinta con {{ }} (texto escapado), nunca con v-html, para evitar XSS.
+              -->
+              <p class="mt-4 whitespace-pre-line text-muted-foreground">{{ article.body }}</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Qué publicamos en redes -->
+    <section class="mt-16" aria-labelledby="topics-title">
+      <h2 id="topics-title" class="text-3xl">Qué vas a encontrar en redes</h2>
       <ul class="mt-8 grid gap-8 md:grid-cols-3">
         <li
           v-for="topic in topics"
