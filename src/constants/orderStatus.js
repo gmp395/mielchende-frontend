@@ -18,9 +18,14 @@ export const ORDER_STATUS_LABELS = {
   [ORDER_STATUS.SHIPPED]: 'Enviado',
 }
 
-/* Explicación para el cliente de lo que significa cada estado */
+/*
+ * Explicación para el cliente de lo que significa cada estado.
+ * En Confirmado se le avisa de que tiene los datos de pago en su email
+ * (no se publica ningún dato de pago en la web).
+ */
 export const ORDER_STATUS_DESCRIPTIONS = {
   [ORDER_STATUS.RECEIVED]: 'Hemos recibido tu solicitud y la revisaremos pronto.',
-  [ORDER_STATUS.CONFIRMED]: 'Hemos confirmado tu solicitud y la estamos preparando.',
+  [ORDER_STATUS.CONFIRMED]:
+    'Hemos confirmado tu solicitud y la estamos preparando. Revisa tu email: te hemos enviado los datos para el pago.',
   [ORDER_STATUS.SHIPPED]: 'Tu pedido ya ha sido enviado.',
 }

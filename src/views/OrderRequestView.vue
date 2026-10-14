@@ -106,7 +106,9 @@ function removeLine(lineId) {
 function validate() {
   const errors = {}
   for (const line of lines.value) {
-    const isProductAvailable = availableProducts.value.some((product) => product.id === line.productId)
+    const isProductAvailable = availableProducts.value.some(
+      (product) => product.id === line.productId,
+    )
     const productError = isProductAvailable ? '' : 'Elige un producto.'
     const quantityError = validateQuantity(line.quantity)
     if (productError || quantityError) {
@@ -234,10 +236,16 @@ async function handleSubmit() {
             v-model="contact.comments"
             rows="4"
             :aria-invalid="contactErrors.comments ? 'true' : 'false'"
-            :aria-describedby="contactErrors.comments ? 'order-comments-error' : 'order-comments-hint'"
+            :aria-describedby="
+              contactErrors.comments ? 'order-comments-error' : 'order-comments-hint'
+            "
             class="mt-1.5 block w-full rounded-md border border-input bg-card px-3 py-2.5 text-base outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30 aria-invalid:border-destructive"
           ></textarea>
-          <p v-if="contactErrors.comments" id="order-comments-error" class="mt-1.5 text-sm text-destructive">
+          <p
+            v-if="contactErrors.comments"
+            id="order-comments-error"
+            class="mt-1.5 text-sm text-destructive"
+          >
             {{ contactErrors.comments }}
           </p>
           <p v-else id="order-comments-hint" class="mt-1.5 text-sm text-muted-foreground">
@@ -245,8 +253,23 @@ async function handleSubmit() {
           </p>
         </div>
 
+        <!--
+          Información sobre las formas de pago.
+          Solo es texto: no se publica ningún dato de pago en la web.
+          Los datos se envían por email al confirmar la solicitud.
+        -->
+        <p class="rounded-md bg-secondary px-4 py-3 text-sm">
+          <strong class="font-medium">Formas de pago:</strong> Pago mediante Bizum o transferencia
+          bancaria Una vez que confirmemos tu solicitud, te enviaremos un correo electrónico con
+          todos los datos necesarios para realizar el pago. ¡Muchas gracias por tu confianza!
+        </p>
+
         <!-- role="alert": el lector de pantalla anuncia el error en cuanto aparece -->
-        <p v-if="serverError" role="alert" class="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+        <p
+          v-if="serverError"
+          role="alert"
+          class="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive"
+        >
           {{ serverError }}
         </p>
 
