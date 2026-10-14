@@ -8,9 +8,7 @@ import { useAuthStore } from '@/stores/auth'
 /*
  * Vistas cargadas de forma diferida (lazy loading): solo se descargan
  * cuando el usuario visita una de sus rutas.
- * ComingSoonView es la vista temporal para las secciones aún no construidas.
  */
-const ComingSoonView = () => import('@/views/ComingSoonView.vue')
 const HomeView = () => import('@/views/HomeView.vue')
 const ContactView = () => import('@/views/ContactView.vue')
 const BeesWorldView = () => import('@/views/BeesWorldView.vue')
@@ -27,6 +25,8 @@ const AdminView = () => import('@/views/AdminView.vue')
 const AdminOrdersView = () => import('@/views/AdminOrdersView.vue')
 const AdminProductsView = () => import('@/views/AdminProductsView.vue')
 const AdminProductFormView = () => import('@/views/AdminProductFormView.vue')
+const AdminArticlesView = () => import('@/views/AdminArticlesView.vue')
+const AdminArticleFormView = () => import('@/views/AdminArticleFormView.vue')
 const LegalNoticeView = () => import('@/views/LegalNoticeView.vue')
 const PrivacyView = () => import('@/views/PrivacyView.vue')
 
@@ -157,16 +157,30 @@ const router = createRouter({
           meta: { title: 'Editar producto · Panel' },
         },
         {
-          /* Gestión de contenidos apícolas: fuera del PMV */
+          /* Contenidos: artículos de Actualidad (MC-47) */
           path: 'contenidos',
           name: 'admin-content',
-          component: ComingSoonView,
+          component: AdminArticlesView,
           meta: { title: 'Contenidos · Panel' },
+        },
+        {
+          /* Alta de artículo (se guarda como borrador) */
+          path: 'contenidos/nuevo',
+          name: 'admin-article-new',
+          component: AdminArticleFormView,
+          meta: { title: 'Nuevo artículo · Panel' },
+        },
+        {
+          /* Edición: el mismo formulario, con el id en la URL */
+          path: 'contenidos/:id/editar',
+          name: 'admin-article-edit',
+          component: AdminArticleFormView,
+          meta: { title: 'Editar artículo · Panel' },
         },
       ],
     },
 
-     /* Páginas legales (con datos de ejemplo hasta publicar la web) */
+    /* Páginas legales (con datos de ejemplo hasta publicar la web) */
     {
       path: '/aviso-legal',
       name: 'legal-notice',
@@ -179,7 +193,6 @@ const router = createRouter({
       component: PrivacyView,
       meta: { title: 'Política de privacidad' },
     },
-    
   ],
 })
 

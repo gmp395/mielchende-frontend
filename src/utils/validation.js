@@ -17,6 +17,13 @@ export const COMMENTS_MAX_LENGTH = 1000
  */
 export const PRODUCT_TEXT_MAX_LENGTH = 255
 
+/*
+ * Límites de un artículo de Actualidad (los mismos que valida el backend con @Size):
+ * título VARCHAR(255) y resumen VARCHAR(500). El texto completo no tiene límite (TEXT).
+ */
+export const ARTICLE_TITLE_MAX_LENGTH = 255
+export const ARTICLE_SUMMARY_MAX_LENGTH = 500
+
 /* Formato básico de email: texto@texto.texto, sin espacios */
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
