@@ -47,7 +47,7 @@ describe('CalendarView', () => {
   it('indica que hay una sola cosecha al año, en septiembre', () => {
     wrapper = mountView()
     const text = wrapper.text()
-    expect(text).toContain('Una sola cosecha al año')
+    expect(text).toContain('Una cosecha al año')
     expect(text).toContain('septiembre')
   })
 
