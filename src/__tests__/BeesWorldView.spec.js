@@ -28,7 +28,7 @@ describe('BeesWorldView', () => {
 
   it('muestra el título de la página', () => {
     wrapper = mountView()
-    expect(wrapper.find('h1').text()).toBe('Mundo de las abejas')
+    expect(wrapper.find('h1').text()).toBe('El mundo de las abejas')
   })
 
   it('presenta las tres castas de la colmena', () => {

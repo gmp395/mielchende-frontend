@@ -31,22 +31,23 @@ describe('GuidesView', () => {
     expect(wrapper.find('h1').text()).toBe('Guías prácticas')
   })
 
-  it('presenta las tres guías', () => {
+  it('presenta las tres guías y la sección del propóleo', () => {
     wrapper = mountView()
     const text = wrapper.text()
     expect(text).toContain('Cómo conservar la miel')
     expect(text).toContain('Por qué cristaliza la miel')
-    expect(text).toContain('Cómo tomar y conservar el polen')
+    expect(text).toContain('Cómo conservar y disfrutar del polen')
+    expect(text).toContain('El propóleo: el escudo natural de la colmena')
   })
 
   /*
-   * Aviso de salud: no dar miel a menores de un año.
+   * Aviso de salud: el polen y el propóleo pueden provocar reacciones alérgicas.
    * Es información importante, así que nos aseguramos de que no desaparezca.
    */
-  it('incluye el aviso sobre la miel y los bebés menores de un año', () => {
+  it('incluye los avisos sobre posibles reacciones alérgicas', () => {
     wrapper = mountView()
-    expect(wrapper.text()).toContain('Nada de miel antes del año')
-    expect(wrapper.text()).toContain('12 meses')
+    expect(wrapper.text()).toContain('reacciones alérgicas')
+    expect(wrapper.text()).toContain('consulta con un profesional sanitario')
   })
 
   /*
