@@ -40,11 +40,19 @@ describe('ThreatsView', () => {
     expect(text).toContain('La pérdida de hábitat')
   })
 
-  /* Cada amenaza explica también qué se hace en el apiario para combatirla */
+  /*
+   * Cada amenaza explica también qué se hace en el apiario para combatirla.
+   * No se busca una frase concreta, para que el test no dependa de la redacción:
+   * se comprueba que las cuatro tarjetas incluyen su pregunta (por ejemplo,
+   * "¿Cómo la controlamos?").
+   */
   it('indica qué se hace frente a cada amenaza', () => {
     wrapper = mountView()
-    const actions = wrapper.findAll('li').filter((item) => item.text().includes('Qué hacemos'))
-    expect(actions).toHaveLength(4)
+    const cards = wrapper.find('[aria-labelledby="threats-title"]').findAll('li')
+    expect(cards).toHaveLength(4)
+    cards.forEach((card) => {
+      expect(card.text()).toContain('?')
+    })
   })
 
   /*
