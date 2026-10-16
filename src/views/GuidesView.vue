@@ -114,7 +114,7 @@ const propolisSections = [
   <!-- El propóleo: foto del panal y texto en dos columnas -->
   <section class="surface-warm" aria-labelledby="propolis-title">
     <div class="container-page grid gap-10 py-20 lg:grid-cols-2 lg:items-start">
-            <!-- alt provisional: pendiente de confirmar qué muestra la foto -->
+           
       <img
         :src="IMAGES.propolis"
         alt="Propóleo sobre la reja de la colmena"
