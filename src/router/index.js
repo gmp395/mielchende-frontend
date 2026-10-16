@@ -32,6 +32,22 @@ const PrivacyView = () => import('@/views/PrivacyView.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+
+  /*
+   * Posición del scroll al cambiar de ruta.
+   * Vue Router no recarga la página, así que por defecto el scroll
+   * se quedaría donde estaba. Esta función decide dónde colocarlo:
+   * - savedPosition: existe cuando se usan los botones Atrás/Adelante
+   *   del navegador; se respeta para volver al punto donde estaba el usuario.
+   * - En cualquier otra navegación, se sube al principio de la página.
+   */
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    }
+    return { top: 0 }
+  },
+
   routes: [
     /* Navegación principal */
     { path: '/', name: 'home', component: HomeView, meta: { title: 'Inicio' } },
