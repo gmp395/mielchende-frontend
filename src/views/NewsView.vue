@@ -1,8 +1,8 @@
 <script setup>
 /*
  * Actualidad apícola (Recursos apícolas).
- * Muestra los artículos que el admin publica desde el panel (Contenidos)
- * y, debajo, remite a las redes sociales, donde se cuenta el día a día.
+ * Reúne las citas y novedades del sector que publica el admin desde el panel
+ * (Contenidos), y explica qué compartimos en cada red social.
  * Si no hay artículos o la API falla, la página sigue teniendo contenido:
  * las redes y la llamada a la acción no dependen del backend.
  */
@@ -12,26 +12,27 @@ import SocialIcon from '@/components/common/SocialIcon.vue'
 import { SOCIAL_LINKS } from '@/constants/contact'
 import { articleRepository } from '@/api/articleRepository'
 import { formatDate } from '@/utils/format'
+import { parseBold } from '@/utils/boldText'
 
 /*
  * Ruta de la foto (carpeta public).
  * Se enlaza con :src para que el compilador de Vue no la convierta en import.
  */
-const BANNER_IMAGE = '/images/banners/colmenas-en-fila.jpg'
+const BANNER_IMAGE = '/images/banners/apicultor-ahumador.jpg'
 
-/* Qué tipo de contenido publicamos en redes, para que se sepa qué se va a encontrar */
+/* Qué compartimos en redes, para que se sepa qué se va a encontrar */
 const topics = [
   {
-    title: 'Novedades del apiario',
-    text: 'Cómo va la temporada, las revisiones de las colmenas y el día a día con las abejas.',
+    title: 'El día a día del apiario',
+    text: 'Descubre cómo avanza la temporada y acompáñanos en el cuidado de nuestras colmenas.',
   },
   {
-    title: 'Ferias y cursos',
-    text: 'Las ferias y mercados en los que estaremos, y las actividades de formación apícola.',
+    title: 'Ferias y encuentros',
+    text: 'Una selección de ferias, exposiciones y encuentros de interés para quienes disfrutan del mundo de las abejas y la apicultura.',
   },
   {
     title: 'Fotos y vídeos',
-    text: 'Imágenes del apiario y de la cosecha, y vídeos de nuestro trabajo en el canal de YouTube.',
+    text: 'Acércate al mundo de las abejas a través de imágenes de nuestro apiario, la cosecha y nuestro trabajo diario.',
   },
 ]
 
@@ -72,8 +73,8 @@ loadArticles()
       <p class="eyebrow">Recursos apícolas</p>
       <h1 class="mt-3 text-4xl">Actualidad apícola</h1>
       <p class="mt-4 text-muted-foreground">
-        Noticias del apiario y de la temporada. El día a día lo contamos también en nuestras
-        redes sociales.
+        Seguimos de cerca el mundo de la apicultura y compartimos las citas y novedades que merece
+        la pena conocer.
       </p>
     </header>
 
@@ -124,18 +125,24 @@ loadArticles()
               <p class="mt-3 font-medium">{{ article.summary }}</p>
               <!--
                 whitespace-pre-line respeta los saltos de línea del texto.
-                Se pinta con {{ }} (texto escapado), nunca con v-html, para evitar XSS.
+                parseBold convierte **texto** en trozos: los marcados van en <strong>.
+                Todo se pinta con {{ }} (texto escapado), nunca con v-html, para evitar XSS.
               -->
-              <p class="mt-4 whitespace-pre-line text-muted-foreground">{{ article.body }}</p>
+              <p class="mt-4 whitespace-pre-line text-muted-foreground"><template
+                  v-for="(segment, index) in parseBold(article.body)"
+                  :key="index"
+                ><strong v-if="segment.bold" class="font-semibold text-foreground">{{
+                    segment.text
+                  }}</strong><span v-else>{{ segment.text }}</span></template></p>
             </div>
           </article>
         </div>
       </div>
     </section>
 
-    <!-- Qué publicamos en redes -->
+    <!-- Qué compartimos en redes -->
     <section class="mt-16" aria-labelledby="topics-title">
-      <h2 id="topics-title" class="text-3xl">Qué vas a encontrar en redes</h2>
+      <h2 id="topics-title" class="text-3xl">Síguenos en redes</h2>
       <ul class="mt-8 grid gap-8 md:grid-cols-3">
         <li
           v-for="topic in topics"
@@ -154,7 +161,7 @@ loadArticles()
     <div class="container-page grid items-center gap-10 py-20 lg:grid-cols-2">
       <img
         :src="BANNER_IMAGE"
-        alt="Colmenas en fila en el apiario"
+        alt="Ahumador echando humo en primer plano, con un apicultor al fondo"
         class="aspect-4/3 w-full rounded-xl object-cover"
         loading="lazy"
       />
@@ -198,13 +205,13 @@ loadArticles()
           :to="{ name: 'catalog' }"
           class="rounded-md bg-primary px-5 py-2.5 text-primary-foreground transition-opacity hover:opacity-90"
         >
-          Ver el catálogo
+          Descubre nuestros productos
         </RouterLink>
         <RouterLink
           :to="{ name: 'contact' }"
           class="rounded-md border border-border px-5 py-2.5 transition-colors hover:bg-secondary"
         >
-          Contactar
+          Contacta con nosotros
         </RouterLink>
       </div>
     </div>

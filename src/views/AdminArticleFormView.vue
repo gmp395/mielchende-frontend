@@ -193,7 +193,7 @@ if (isEdit) loadArticle()
             {{ errors.body }}
           </p>
           <p v-else id="article-body-hint" class="mt-1.5 text-sm text-muted-foreground">
-            Texto sin formato. Deja una línea en blanco para separar los párrafos.
+            Deja una línea en blanco para separar los párrafos. Escribe **así** para poner un texto en negrita.
           </p>
         </div>
 
