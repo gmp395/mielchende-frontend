@@ -134,12 +134,15 @@ describe('CatalogView', () => {
     productRepository.getAll.mockResolvedValue(sampleProducts)
     await mountCatalog()
 
-    /* Al elegir una categoría, solo quedan sus productos y el botón queda activo */
-    await filterButton('Productos para el apicultor').trigger('click')
+    /*
+     * Al elegir una categoría, solo quedan sus productos y el botón queda activo.
+     * «Para el apicultor» agrupa los enjambres y las reinas (BEEKEEPER_PRODUCTS)
+     */
+    await filterButton('Para el apicultor').trigger('click')
 
     expect(wrapper.findAll('li')).toHaveLength(1)
     expect(wrapper.find('li').text()).toContain('Reina fecundada')
-    expect(filterButton('Productos para el apicultor').attributes('aria-pressed')).toBe('true')
+    expect(filterButton('Para el apicultor').attributes('aria-pressed')).toBe('true')
 
     /* "Todos" vuelve a mostrar el catálogo completo */
     await filterButton('Todos').trigger('click')

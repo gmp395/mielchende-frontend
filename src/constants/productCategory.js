@@ -3,6 +3,8 @@
  * y el texto que se muestra al usuario para cada una.
  * Se usan en los filtros del catálogo y en el formulario del panel.
  * El orden de este objeto es el orden en que aparecen en pantalla.
+ * BEEKEEPER_PRODUCTS (enjambres y reinas) se muestra como «Para el apicultor»:
+ * son animales vivos, así que se evita llamarlos «productos» de cara al cliente.
  */
 export const PRODUCT_CATEGORY = {
   HONEY: 'HONEY',
@@ -13,5 +15,5 @@ export const PRODUCT_CATEGORY = {
 export const PRODUCT_CATEGORY_LABELS = {
   [PRODUCT_CATEGORY.HONEY]: 'Mieles',
   [PRODUCT_CATEGORY.HIVE_PRODUCTS]: 'Otros productos de la colmena',
-  [PRODUCT_CATEGORY.BEEKEEPER_PRODUCTS]: 'Productos para el apicultor',
+  [PRODUCT_CATEGORY.BEEKEEPER_PRODUCTS]: 'Para el apicultor',
 }
