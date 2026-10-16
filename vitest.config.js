@@ -9,6 +9,8 @@ export default mergeConfig(
       environment: 'jsdom',
       exclude: [...configDefaults.exclude, 'e2e/**'],
       root: fileURLToPath(new URL('./', import.meta.url)),
+      /* Archivo que se ejecuta antes de los tests (simula lo que jsdom no tiene) */
+      setupFiles: ['./vitest.setup.js'],
     },
   }),
 )
