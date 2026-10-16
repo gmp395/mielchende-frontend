@@ -26,7 +26,7 @@ const castes = [
   {
     title: 'La reina',
     image: IMAGES.queen,
-    alt: 'Reina marcada con un punto verde, rodeada de obreras',
+    alt: 'Reina marcada con un punto verde en el tórax, sobre un panal',
     paragraphs: [
       'Es la hembra reproductora de la colonia y la madre de la mayoría de las abejas que viven en ella. Durante la temporada de mayor actividad puede poner más de mil huevos al día y vivir varios años.',
       'Para localizarla con más facilidad entre miles de abejas, los apicultores suelen marcarla con un pequeño punto de color en el tórax.',
@@ -44,8 +44,7 @@ const castes = [
   {
     title: 'Los zánganos',
     image: IMAGES.drones,
-    /* alt provisional: pendiente de confirmar qué muestra la foto */
-    alt: 'Zángano en un cuadro de la colmena',
+    alt: 'Zángano, de ojos grandes y cuerpo robusto, junto a obreras sobre el panal',
     paragraphs: [
       'Son los machos de la colonia. Su principal función es fecundar a las reinas durante el vuelo nupcial. No tienen aguijón y, a diferencia de las obreras, no participan en la recolección de néctar ni de polen.',
       'Su presencia es más habitual en primavera y verano. Cuando escasean los recursos, especialmente en otoño, las obreras pueden expulsarlos de la colmena. Los zánganos también desempeñan un papel importante en la diversidad genética de las poblaciones de abejas.',
@@ -81,7 +80,7 @@ const curiosities = [
       <h1 class="mt-3 text-4xl">El mundo de las abejas</h1>
       <p class="mt-4 text-muted-foreground">
         Una colmena es mucho más que un lugar donde viven las abejas: es una pequeña sociedad en la
-        que cada una cumple una función. 
+        que cada una cumple una función.
       </p>
     </header>
 
@@ -119,10 +118,9 @@ const curiosities = [
   <!-- Polinización: foto y texto en dos columnas -->
   <section class="surface-warm" aria-labelledby="pollination-title">
     <div class="container-page grid items-center gap-10 py-20 lg:grid-cols-2">
-      <!-- alt provisional: pendiente de confirmar qué muestra la foto -->
       <img
         :src="IMAGES.pollination"
-        alt="Abejas en la colmena"
+        alt="Abejas en vuelo sobre los cuadros de una colmena abierta"
         class="aspect-4/3 w-full rounded-xl object-cover"
         loading="lazy"
       />
@@ -135,8 +133,8 @@ const curiosities = [
         </p>
         <p class="mt-4 text-muted-foreground">
           Muchos cultivos de frutas y hortalizas se benefician de la polinización realizada por las
-          abejas y otros insectos. De este modo las abejas contribuyen a la biodiversidad y a la producción
-          de muchos de los alimentos que llegan a nuestra mesa.
+          abejas y otros insectos. De este modo, las abejas contribuyen a la biodiversidad y a la
+          producción de muchos de los alimentos que llegan a nuestra mesa.
         </p>
         <p class="mt-4 text-muted-foreground">
           Cuidar de las abejas es también cuidar de los campos, los bosques y el paisaje que nos

@@ -104,10 +104,9 @@ const seasons = [
   <!-- Destacado: una sola cosecha al año -->
   <section class="surface-warm" aria-labelledby="harvest-title">
     <div class="container-page grid items-center gap-10 py-20 lg:grid-cols-2">
-      <!-- alt provisional: pendiente de confirmar qué muestra la foto -->
-      <img
+            <img
         :src="IMAGES.harvest"
-        alt="Apicultor revisando un cuadro de la colmena"
+        alt="Apicultor con traje y careta sacando de la colmena un cuadro de miel operculada"
         class="aspect-4/3 w-full rounded-xl object-cover"
         loading="lazy"
       />

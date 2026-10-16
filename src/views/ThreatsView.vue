@@ -143,10 +143,9 @@ const threats = [
           de nuestra manera de entender la apicultura.
         </p>
       </div>
-      <!-- alt provisional: pendiente de confirmar qué muestra la foto -->
-      <img
+        <img
         :src="IMAGES.landscape"
-        alt="Paisaje del entorno del apiario"
+        alt="Camino entre castaños otoñales en el entorno del apiario"
         class="aspect-4/3 w-full rounded-xl object-cover"
         loading="lazy"
       />
