@@ -8,6 +8,8 @@ El backend está en [mielchende-backend](https://github.com/gmp395/mielchende-ba
 
 La presentación del proyecto está en [Canva](https://canva.link/o9bquznrnbz66sf).
 
+El diseño (wireframes, iteración con Lovable y mockups de la web final) está en [Figma](https://www.figma.com/design/uWlhx5mhzDOsoaN3hQbVDj/Miel-chende).
+
 La documentación ampliada está en la [wiki](https://github.com/gmp395/mielchende-frontend/wiki).
 
 ## Índice
@@ -216,6 +218,39 @@ npx vitest run
 **158 tests en 35 archivos.** Cubren las utilidades (validaciones, formato, ciclo de estados, negritas), los mappers, el `httpClient`, el store de autenticación, los guards del router y las vistas, incluido el panel de contenidos. En los tests de vistas, los repositorios se sustituyen por *mocks*, así que no necesitan el backend.
 
 [<img src="docs/screenshots/tests-frontend.png" width="500" alt="Resultado de los tests del frontend: 158 tests en verde">](docs/screenshots/tests-frontend.png)
+
+## Testing
+
+### Tests unitarios y de componentes
+
+```bash
+npx vitest run
+```
+
+(`npm run test:unit` los ejecuta en modo vigilancia: se repiten cada vez que se guarda un archivo.)
+
+**158 tests en 35 archivos.** Cubren las utilidades (validaciones, formato, ciclo de estados, negritas), los mappers, el `httpClient`, el store de autenticación, los guards del router y las vistas, incluido el panel de contenidos. En los tests de vistas, los repositorios se sustituyen por *mocks*, así que no necesitan el backend.
+
+[<img src="docs/screenshots/tests-frontend.png" width="500" alt="Resultado de los tests del frontend: 158 tests en verde">](docs/screenshots/tests-frontend.png)
+
+### Cobertura
+
+```bash
+npx vitest run --coverage
+```
+
+La cobertura se mide con el proveedor **V8** de Vitest. Se calcula sobre todo el código de `src`, también sobre los archivos que no tienen tests, y el informe se abre en `coverage/index.html`.
+
+| Medida | Cobertura |
+|---|---|
+| Sentencias | 92 % |
+| Ramas | 89 % |
+| Funciones | 84 % |
+| Líneas | 93 % |
+
+Las vistas, los componentes, los mappers, el store y las utilidades están cubiertos entre el 87 y el 100 %. La carpeta `src/api` queda más baja (61 %) porque, en los tests de las vistas, los repositorios se sustituyen por *mocks*. El `httpClient`, que es el punto común de todas las peticiones, sí tiene sus propios tests.
+
+[<img src="docs/screenshots/coverage-frontend.png" width="500" alt="Informe de cobertura de Vitest: 92 % de sentencias y 89 % de ramas">](docs/screenshots/coverage-frontend.png)
 
 ### Tests end-to-end
 
