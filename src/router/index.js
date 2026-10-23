@@ -27,6 +27,7 @@ const AdminProductsView = () => import('@/views/AdminProductsView.vue')
 const AdminProductFormView = () => import('@/views/AdminProductFormView.vue')
 const AdminArticlesView = () => import('@/views/AdminArticlesView.vue')
 const AdminArticleFormView = () => import('@/views/AdminArticleFormView.vue')
+const AdminMessagesView = () => import('@/views/AdminMessagesView.vue')
 const LegalNoticeView = () => import('@/views/LegalNoticeView.vue')
 const PrivacyView = () => import('@/views/PrivacyView.vue')
 
@@ -192,6 +193,13 @@ const router = createRouter({
           name: 'admin-article-edit',
           component: AdminArticleFormView,
           meta: { title: 'Editar artículo · Panel' },
+        },
+        {
+          /* Mensajes del formulario de contacto (solo lectura) */
+          path: 'mensajes',
+          name: 'admin-messages',
+          component: AdminMessagesView,
+          meta: { title: 'Mensajes · Panel' },
         },
       ],
     },

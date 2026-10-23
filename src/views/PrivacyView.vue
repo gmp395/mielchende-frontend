@@ -5,7 +5,6 @@
  * Los datos del titular vienen de constants/legal.js (de ejemplo hasta publicar).
  */
 import LegalPage from '@/components/legal/LegalPage.vue'
-import { CONTACT_EMAIL } from '@/constants/contact'
 import { LEGAL_INFO } from '@/constants/legal'
 
 const sections = [
@@ -16,7 +15,7 @@ const sections = [
       `Titular: ${LEGAL_INFO.ownerName}`,
       `NIF: ${LEGAL_INFO.taxId}`,
       `Domicilio: ${LEGAL_INFO.address}`,
-      `Correo electrónico: ${CONTACT_EMAIL}`,
+      'Contacto: a través del formulario de la página de Contacto',
     ],
   },
   {
@@ -25,7 +24,7 @@ const sections = [
     items: [
       'Al crear una cuenta: tu nombre, tu correo electrónico y tu contraseña. La contraseña no se guarda tal cual: se almacena protegida con un algoritmo de hash.',
       'Al enviar una solicitud: los productos y cantidades que eliges y, si los indicas, tu teléfono y tus comentarios.',
-      'Al escribirnos por correo electrónico: los datos que incluyas en tu mensaje.',
+      'Al escribirnos desde el formulario de contacto: tu nombre, tu correo electrónico y tu mensaje.',
     ],
   },
   {
@@ -60,13 +59,14 @@ const sections = [
     paragraphs: [
       'No cedemos tus datos a terceros, salvo obligación legal.',
       `Para que la web funcione contamos con proveedores técnicos (alojamiento web: ${LEGAL_INFO.hostingProvider}, y servicio de correo electrónico), que solo tratan los datos por cuenta del titular.`,
+      'Para proteger los formularios de registro y contacto frente a envíos automáticos usamos Cloudflare Turnstile, que analiza datos técnicos de tu navegador para comprobar que no eres un robot.',
     ],
   },
   {
     id: 'rights',
     title: 'Tus derechos',
     paragraphs: [
-      `Puedes ejercer tus derechos escribiendo a ${CONTACT_EMAIL} con el asunto «Protección de datos»:`,
+      'Puedes ejercer tus derechos escribiéndonos desde el formulario de Contacto, indicando «Protección de datos» en el mensaje:',
     ],
     items: [
       'Acceso: saber qué datos tuyos tratamos.',

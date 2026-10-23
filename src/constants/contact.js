@@ -2,9 +2,9 @@
  * Datos de contacto del negocio, en un solo sitio.
  * Los usan el pie de página y la página de Contacto:
  * si cambia alguno, solo hay que tocarlo aquí.
+ * El correo del negocio no se publica en la web, para que no lo recojan los bots:
+ * se contacta a través del formulario de la página de Contacto.
  */
-
-export const CONTACT_EMAIL = 'apicolachende@gmail.com'
 
 /* Localidad (no la dirección exacta del apiario) */
 export const LOCATION_LABEL = 'Cospeito, Lugo (Galicia)'

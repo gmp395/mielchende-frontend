@@ -8,7 +8,8 @@ import { httpClient, configureHttpClient, ApiError } from '@/api/httpClient'
 
 /*
  * Crea una respuesta falsa con la forma mínima que usa el cliente.
- * Si no pasamos datos, json() falla, igual que una respuesta sin cuerpo.
+ * Si no pasamos datos, se comporta como una respuesta sin cuerpo:
+ * json() falla y text() devuelve una cadena vacía, igual que en el navegador.
  */
 function mockResponse(status, data) {
   return {
@@ -18,6 +19,7 @@ function mockResponse(status, data) {
       if (data === undefined) throw new Error('Sin cuerpo')
       return data
     },
+    text: async () => (data === undefined ? '' : JSON.stringify(data)),
   }
 }
 
@@ -94,6 +96,14 @@ describe('httpClient', () => {
     fetchMock.mockResolvedValue(mockResponse(204))
 
     const result = await httpClient.delete('/admin/products/1')
+
+    expect(result).toBeNull()
+  })
+
+  it('devuelve null en una respuesta 201 sin cuerpo (formulario de contacto)', async () => {
+    fetchMock.mockResolvedValue(mockResponse(201))
+
+    const result = await httpClient.post('/contact', { name: 'Ana' })
 
     expect(result).toBeNull()
   })
