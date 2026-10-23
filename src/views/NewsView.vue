@@ -177,14 +177,14 @@ loadArticles()
                 <!--
                   Cada noticia enlaza a esta misma página con ?articulo=id.
                   aria-current="true" marca la que se está leyendo: lo anuncia el lector de pantalla
-                  y, con la variante aria-[current=true]:, también cambia el fondo.
+                  y, con la variante aria-current:, también cambia el fondo.
                   Se fija siempre (true o false) para no depender del marcado automático
                   de RouterLink: todos los enlaces apuntan a la misma ruta y solo cambia la query.
                 -->
                 <RouterLink
                   :to="{ name: 'resources-news', query: { articulo: article.id } }"
                   :aria-current="isSelected(article) ? 'true' : 'false'"
-                  class="-mx-2 block rounded-md px-2 py-3 transition-colors hover:bg-secondary aria-[current=true]:bg-honey-soft"
+                  class="-mx-2 block rounded-md px-2 py-3 transition-colors hover:bg-secondary aria-current:bg-honey-soft"
                 >
                   <time :datetime="article.publishedAt" class="text-xs text-muted-foreground">
                     {{ formatDate(article.publishedAt) }}
