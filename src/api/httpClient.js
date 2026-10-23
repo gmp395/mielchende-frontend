@@ -94,10 +94,14 @@ async function request(path, options = {}) {
     throw new ApiError(response.status, message)
   }
 
-  /* 204 No Content (por ejemplo, al borrar): no hay cuerpo que leer */
-  if (response.status === 204) return null
-
-  return response.json()
+  /*
+   * Algunas respuestas correctas no traen cuerpo:
+   * 204 No Content (al borrar) o 201 Created sin datos (al enviar el formulario de contacto).
+   * Leemos el cuerpo como texto y solo lo convertimos a JSON si hay algo que convertir;
+   * si está vacío, devolvemos null en lugar de fallar.
+   */
+  const text = await response.text()
+  return text ? JSON.parse(text) : null
 }
 
 /* Atajos por verbo HTTP, que son los que usan los repositorios */
