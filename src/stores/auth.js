@@ -64,9 +64,10 @@ export const useAuthStore = defineStore('auth', () => {
   /*
    * Tras registrarse, iniciamos sesión automáticamente
    * para que el cliente no tenga que volver a escribir sus datos.
+   * El token del captcha solo hace falta para el registro, no para el login.
    */
-  async function register(name, userEmail, password) {
-    await authRepository.register(name, userEmail, password)
+  async function register(name, userEmail, password, captchaToken) {
+    await authRepository.register(name, userEmail, password, captchaToken)
     await login(userEmail, password)
   }
 
