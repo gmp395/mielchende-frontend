@@ -1,7 +1,8 @@
 /*
  * Tests de la vista de acceso (pestañas, validación, login y registro).
  * Se monta con el router real y Pinia; el repositorio se sustituye por un mock,
- * así no se llama al backend.
+ * así no se llama al backend. El captcha se sustituye por un componente falso
+ * que entrega un token al montarse, así no se carga Cloudflare.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
@@ -19,6 +20,17 @@ vi.mock('@/api/authRepository', () => ({
   },
 }))
 
+/* Captcha falso: entrega un token al montarse y registra cuántas veces se reinicia */
+const captchaReset = vi.fn()
+const CaptchaStub = {
+  emits: ['update:modelValue'],
+  template: '<div data-test="captcha"></div>',
+  mounted() {
+    this.$emit('update:modelValue', 'token-de-prueba')
+  },
+  methods: { reset: captchaReset },
+}
+
 /* Token válido de cliente, para simular un login correcto */
 const userToken = () => makeToken({ sub: 'ana@test.com', roles: ['ROLE_USER'], exp: inOneHour() })
 
@@ -29,7 +41,9 @@ let wrapper
 async function mountAt(path) {
   await router.push(path)
   await router.isReady()
-  wrapper = mount(AuthView, { global: { plugins: [pinia, router] } })
+  wrapper = mount(AuthView, {
+    global: { plugins: [pinia, router], stubs: { CaptchaWidget: CaptchaStub } },
+  })
   await flushPromises()
   return wrapper
 }
@@ -129,12 +143,37 @@ describe('AuthView', () => {
     await wrapper.find('#register-password-confirm').setValue('secreta123')
     await wrapper.find('form').trigger('submit')
 
-    expect(authRepository.register).toHaveBeenCalledWith('Ana', 'ana@test.com', 'secreta123')
+    /* El token del captcha viaja junto con los datos del registro */
+    expect(authRepository.register).toHaveBeenCalledWith(
+      'Ana',
+      'ana@test.com',
+      'secreta123',
+      'token-de-prueba',
+    )
 
     /* Esperamos a que termine la navegación y comprobamos que la sesión quedó iniciada */
     await vi.waitFor(() => {
       expect(router.currentRoute.value.name).toBe('home')
     })
     expect(localStorage.getItem('mielchende_token')).not.toBeNull()
+  })
+
+  it('si el backend rechaza el registro pide un captcha nuevo', async () => {
+    authRepository.register.mockRejectedValue(
+      new ApiError(400, 'No se ha podido verificar que no eres un robot'),
+    )
+    await mountAt('/registro')
+
+    await wrapper.find('#register-name').setValue('Ana')
+    await wrapper.find('#register-email').setValue('ana@test.com')
+    await wrapper.find('#register-password').setValue('secreta123')
+    await wrapper.find('#register-password-confirm').setValue('secreta123')
+    await wrapper.find('form').trigger('submit')
+    await flushPromises()
+
+    expect(wrapper.find('[role="alert"]').text()).toBe(
+      'Revisa los datos del formulario y vuelve a completar la verificación.',
+    )
+    expect(captchaReset).toHaveBeenCalled()
   })
 })
