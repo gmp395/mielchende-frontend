@@ -298,4 +298,21 @@ El recorrido principal registra un cliente nuevo, solicita un producto y comprue
 - **Captcha (Cloudflare Turnstile) en el contacto y el registro**, los dos formularios públicos que crean datos. El botón de envío se activa solo al superar el reto, y el token se pide de nuevo tras cada envío porque solo sirve una vez.
 - **Actualidad en formato periódico**: el artículo seleccionado va en la URL (`?articulo=id`), así funcionan los botones de atrás y adelante del navegador y se puede compartir el enlace a una noticia concreta.
 - **E2E contra el backend real**, en lugar de simular la API.
-- **Fotos reales del apiario** en lugar de imágenes generadas, para que la web sea
+- **Fotos reales del apiario** en lugar de imágenes generadas, para que la web sea fiel a la realidad del negocio. Las rutas de las imágenes se enlazan con `:src` desde constantes, para que Vite no las convierta en imports.
+- **Artículos en borrador o publicados, sin borrado**: despublicar devuelve el artículo a borrador sin perder el texto. Es el mismo criterio que en las solicitudes de pedido: estados en lugar de borrar.
+- **Negritas en los artículos sin `v-html`**: `parseBold` convierte `**texto**` en trozos que el template pinta con `<strong>`. El texto sigue escapado por Vue, así que no hay riesgo de XSS.
+- **«Para el apicultor» como nombre de la categoría** de enjambres y reinas, en lugar de «productos», porque son animales vivos. Solo cambia la etiqueta: el valor interno de la API se mantiene.
+- **`/recursos` redirige al primer apartado**, porque la sección no necesita página propia: se navega desde el menú.
+
+## Próximos pasos
+
+- **Categorías y página de detalle para los artículos de Actualidad**, con filtro por categoría.
+- **Subida de imágenes** desde el panel, en lugar de indicar su ruta.
+- **Aviso por correo al administrador** cuando llegue una solicitud o un mensaje de contacto.
+- **Gestión de los mensajes de contacto**: marcarlos como leídos o archivarlos y, cuando lo pida la persona que escribió, eliminarlos.
+- **Recorrido E2E del administrador.**
+- **Despliegue** en un servidor con HTTPS y claves reales del captcha.
+
+## Autora
+
+**Gema Miguel** · [GitHub](https://github.com/gmp395)
