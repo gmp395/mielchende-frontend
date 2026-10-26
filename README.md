@@ -40,11 +40,11 @@ Este repositorio contiene la aplicación en Vue que consume la [API del backend]
 
 - **Inicio** con la presentación del apiario y acceso al catálogo.
 - **Catálogo** con filtro por categorías (Mieles, Otros productos de la colmena y Para el apicultor) y **ficha** de cada producto, con su disponibilidad (disponible, próximamente o agotado hasta la próxima cosecha).
-- **Contacto**: correo, ubicación de referencia con enlace a Google Maps y redes sociales.
+- **Contacto**: formulario protegido con captcha, cuyos mensajes llegan al panel de administración, ubicación de referencia con enlace a Google Maps y redes sociales. La web no publica ningún correo electrónico.
 - **Recursos apícolas**, con fotos reales del apiario:
-  - **Actualidad apícola**: las noticias que el administrador publica desde el panel (por ejemplo, la agenda de ferias del sector), con negritas en el texto.
+  - **Actualidad apícola**, en formato periódico: el artículo seleccionado se lee en grande y el resto aparece en una columna lateral. Son las noticias que el administrador publica desde el panel (por ejemplo, la agenda de ferias del sector), con negritas en el texto.
   - **Calendario apícola**, **Mundo de las abejas**, **Amenazas para las abejas** y **Guías prácticas**.
-- Registro e inicio de sesión en una misma vista con dos pestañas.
+- Registro (protegido con captcha) e inicio de sesión en una misma vista con dos pestañas.
 - **Aviso legal** y **política de privacidad**.
 
 ### Cliente
@@ -57,6 +57,7 @@ Este repositorio contiene la aplicación en Vue que consume la [API del backend]
 - **Solicitudes**: listado de todas las solicitudes, resumen de pendientes, filtro por estado y cambio de estado un paso adelante o atrás.
 - **Productos**: alta, edición, cambio de disponibilidad y borrado con confirmación. Si un producto tiene solicitudes, no se puede borrar y se ofrece marcarlo como agotado.
 - **Contenidos**: artículos de Actualidad. Se crean como borrador, se editan y se publican o despublican; no se borran. Solo los publicados se ven en la web.
+- **Mensajes**: los mensajes del formulario de contacto, del más reciente al más antiguo, con un enlace para responder por correo.
 
 ## Capturas
 
@@ -70,11 +71,11 @@ Las miniaturas se pueden pulsar para ver la captura a tamaño completo.
 
 | Actualidad apícola | Calendario apícola | Mundo de las abejas |
 |---|---|---|
-| [<img src="docs/screenshots/actualidad.png" width="250" alt="Actualidad apícola con la agenda de ferias">](docs/screenshots/actualidad.png) | [<img src="docs/screenshots/calendario.png" width="250" alt="Calendario apícola">](docs/screenshots/calendario.png) | [<img src="docs/screenshots/mundo-abejas.png" width="250" alt="Mundo de las abejas">](docs/screenshots/mundo-abejas.png) |
+| [<img src="docs/screenshots/actualidad.png" width="250" alt="Actualidad apícola en formato periódico">](docs/screenshots/actualidad.png) | [<img src="docs/screenshots/calendario.png" width="250" alt="Calendario apícola">](docs/screenshots/calendario.png) | [<img src="docs/screenshots/mundo-abejas.png" width="250" alt="Mundo de las abejas">](docs/screenshots/mundo-abejas.png) |
 
 | Amenazas para las abejas | Guías prácticas | Contacto |
 |---|---|---|
-| [<img src="docs/screenshots/amenazas.png" width="250" alt="Amenazas para las abejas">](docs/screenshots/amenazas.png) | [<img src="docs/screenshots/guias.png" width="250" alt="Guías prácticas">](docs/screenshots/guias.png) | [<img src="docs/screenshots/contacto.png" width="250" alt="Página de contacto">](docs/screenshots/contacto.png) |
+| [<img src="docs/screenshots/amenazas.png" width="250" alt="Amenazas para las abejas">](docs/screenshots/amenazas.png) | [<img src="docs/screenshots/guias.png" width="250" alt="Guías prácticas">](docs/screenshots/guias.png) | [<img src="docs/screenshots/contacto.png" width="250" alt="Formulario de contacto con captcha">](docs/screenshots/contacto.png) |
 
 | Aviso legal | Política de privacidad |
 |---|---|
@@ -84,13 +85,13 @@ Las miniaturas se pueden pulsar para ver la captura a tamaño completo.
 
 | Inicio de sesión | Registro | Solicitud de pedido | Mis solicitudes |
 |---|---|---|---|
-| [<img src="docs/screenshots/login.png" width="200" alt="Pestaña de inicio de sesión">](docs/screenshots/login.png) | [<img src="docs/screenshots/registro.png" width="200" alt="Pestaña de registro">](docs/screenshots/registro.png) | [<img src="docs/screenshots/solicitud.png" width="200" alt="Formulario de solicitud de pedido">](docs/screenshots/solicitud.png) | [<img src="docs/screenshots/mis-solicitudes.png" width="200" alt="Historial de solicitudes con su estado">](docs/screenshots/mis-solicitudes.png) |
+| [<img src="docs/screenshots/login.png" width="200" alt="Pestaña de inicio de sesión">](docs/screenshots/login.png) | [<img src="docs/screenshots/registro.png" width="200" alt="Pestaña de registro con captcha">](docs/screenshots/registro.png) | [<img src="docs/screenshots/solicitud.png" width="200" alt="Formulario de solicitud de pedido">](docs/screenshots/solicitud.png) | [<img src="docs/screenshots/mis-solicitudes.png" width="200" alt="Historial de solicitudes con su estado">](docs/screenshots/mis-solicitudes.png) |
 
 ### Panel de administración
 
-| Solicitudes | Productos | Contenidos |
-|---|---|---|
-| [<img src="docs/screenshots/admin-solicitudes.png" width="250" alt="Panel: solicitudes">](docs/screenshots/admin-solicitudes.png) | [<img src="docs/screenshots/admin-productos.png" width="250" alt="Panel: productos">](docs/screenshots/admin-productos.png) | [<img src="docs/screenshots/admin-contenidos.png" width="250" alt="Panel: artículos de Actualidad">](docs/screenshots/admin-contenidos.png) |
+| Solicitudes | Productos | Contenidos | Mensajes |
+|---|---|---|---|
+| [<img src="docs/screenshots/admin-solicitudes.png" width="200" alt="Panel: solicitudes">](docs/screenshots/admin-solicitudes.png) | [<img src="docs/screenshots/admin-productos.png" width="200" alt="Panel: productos">](docs/screenshots/admin-productos.png) | [<img src="docs/screenshots/admin-contenidos.png" width="200" alt="Panel: artículos de Actualidad">](docs/screenshots/admin-contenidos.png) | [<img src="docs/screenshots/admin-mensajes.png" width="200" alt="Panel: mensajes de contacto">](docs/screenshots/admin-mensajes.png) |
 
 ### Móvil
 
@@ -112,6 +113,7 @@ Las miniaturas se pueden pulsar para ver la captura a tamaño completo.
 | Estado global | Pinia |
 | Estilos | Tailwind CSS 4 |
 | Iconos | Lucide |
+| Captcha | Cloudflare Turnstile |
 | Tests unitarios y de componentes | Vitest y Vue Test Utils |
 | Tests end-to-end | Playwright |
 | Calidad de código | ESLint, Oxlint y Prettier |
@@ -154,11 +156,12 @@ src
 └── views/        Una vista por pantalla
 ```
 
-- **`httpClient`**: añade el token (`Authorization: Bearer`) solo si la sesión es válida, convierte cualquier error en un `ApiError` uniforme y, ante un 401, cierra la sesión y redirige al login.
-- **Repositorios** (`productRepository`, `orderRepository`, `articleRepository`, `adminArticleRepository`...): un método por endpoint, siguiendo el *Repository Pattern*.
+- **`httpClient`**: añade el token (`Authorization: Bearer`) solo si la sesión es válida, convierte cualquier error en un `ApiError` uniforme y, ante un 401, cierra la sesión y redirige al login. Acepta también respuestas correctas sin cuerpo (201 y 204).
+- **Repositorios** (`productRepository`, `orderRepository`, `contactRepository`, `adminArticleRepository`...): un método por endpoint, siguiendo el *Repository Pattern*.
 - **Mappers**: traducen entre los datos del formulario y el formato que espera la API. Si el backend cambiara un nombre de campo, solo habría que tocar el mapper.
 - **Store `auth`**: el token es la única fuente de verdad; el email, los roles y la caducidad se obtienen decodificando el JWT. El getter `validToken` devuelve el token solo si no ha caducado.
 - **Guards del router**: `requiresAuth`, `requiresAdmin` y `guestOnly`. Las rutas del panel heredan `requiresAdmin` de la ruta padre `/admin`. Son una ayuda para la experiencia de usuario: la seguridad real la aplica el backend.
+- **`CaptchaWidget`**: carga el script de Cloudflare Turnstile una sola vez, pinta el reto y entrega el token al formulario por `v-model`. El token solo demuestra que se ha superado el reto: quien lo verifica es el backend, con la clave secreta.
 
 ## Diseño
 
@@ -191,7 +194,14 @@ npm install
 cp .env.example .env
 ```
 
-Contiene la URL de la API (`VITE_API_URL=http://localhost:8081/api`). Si el backend está en el puerto por defecto, no hay que cambiar nada.
+Contiene dos variables:
+
+| Variable | Para qué sirve |
+|---|---|
+| `VITE_API_URL` | URL de la API (`http://localhost:8081/api`). Si el backend está en el puerto por defecto, no hay que cambiarla. |
+| `VITE_TURNSTILE_SITE_KEY` | Clave pública del captcha. El ejemplo trae la **clave de prueba de Cloudflare**: muestra el reto con un aviso de pruebas y siempre lo da por superado. Debe ir emparejada con la clave secreta de prueba en el `.env` del backend. |
+
+Para usar claves reales, se crea un widget en el panel de Cloudflare Turnstile con el dominio de la web (`localhost` en desarrollo). La clave pública va en este `.env` y la secreta, en el del backend. Ninguna de las dos se sube al repositorio.
 
 ### 3. Arrancar la aplicación
 
@@ -215,23 +225,13 @@ npx vitest run
 
 (`npm run test:unit` los ejecuta en modo vigilancia: se repiten cada vez que se guarda un archivo.)
 
-**158 tests en 35 archivos.** Cubren las utilidades (validaciones, formato, ciclo de estados, negritas), los mappers, el `httpClient`, el store de autenticación, los guards del router y las vistas, incluido el panel de contenidos. En los tests de vistas, los repositorios se sustituyen por *mocks*, así que no necesitan el backend.
+**212 tests en 40 archivos.** Cubren las utilidades (validaciones, formato, ciclo de estados, negritas), los mappers, el `httpClient`, los repositorios, el store de autenticación, los guards del router, los componentes y todas las vistas, incluido el panel de administración. Ninguno necesita el backend ni conexión a internet:
 
-[<img src="docs/screenshots/tests-frontend.png" width="500" alt="Resultado de los tests del frontend: 158 tests en verde">](docs/screenshots/tests-frontend.png)
+- En los tests de vistas, los repositorios se sustituyen por *mocks*.
+- Los repositorios se prueban con el `httpClient` simulado, con una tabla de casos (`it.each`) que comprueba el verbo HTTP, la ruta y los datos de cada método.
+- El `CaptchaWidget` se prueba con una API de Turnstile falsa (`window.turnstile`), sin cargar el script de Cloudflare.
 
-## Testing
-
-### Tests unitarios y de componentes
-
-```bash
-npx vitest run
-```
-
-(`npm run test:unit` los ejecuta en modo vigilancia: se repiten cada vez que se guarda un archivo.)
-
-**158 tests en 35 archivos.** Cubren las utilidades (validaciones, formato, ciclo de estados, negritas), los mappers, el `httpClient`, el store de autenticación, los guards del router y las vistas, incluido el panel de contenidos. En los tests de vistas, los repositorios se sustituyen por *mocks*, así que no necesitan el backend.
-
-[<img src="docs/screenshots/tests-frontend.png" width="500" alt="Resultado de los tests del frontend: 158 tests en verde">](docs/screenshots/tests-frontend.png)
+[<img src="docs/screenshots/tests-frontend.png" width="500" alt="Resultado de los tests del frontend: 212 tests en verde">](docs/screenshots/tests-frontend.png)
 
 ### Cobertura
 
@@ -243,14 +243,14 @@ La cobertura se mide con el proveedor **V8** de Vitest. Se calcula sobre todo el
 
 | Medida | Cobertura |
 |---|---|
-| Sentencias | 92 % |
-| Ramas | 89 % |
-| Funciones | 84 % |
-| Líneas | 93 % |
+| Sentencias | 96 % |
+| Ramas | 92 % |
+| Funciones | 92 % |
+| Líneas | 97 % |
 
-Las vistas, los componentes, los mappers, el store y las utilidades están cubiertos entre el 87 y el 100 %. La carpeta `src/api` queda más baja (61 %) porque, en los tests de las vistas, los repositorios se sustituyen por *mocks*. El `httpClient`, que es el punto común de todas las peticiones, sí tiene sus propios tests.
+Todas las carpetas de `src` superan el 70 % en las cuatro medidas.
 
-[<img src="docs/screenshots/coverage-frontend.png" width="500" alt="Informe de cobertura de Vitest: 92 % de sentencias y 89 % de ramas">](docs/screenshots/coverage-frontend.png)
+[<img src="docs/screenshots/coverage-frontend.png" width="500" alt="Informe de cobertura de Vitest: 96 % de sentencias y 92 % de ramas">](docs/screenshots/coverage-frontend.png)
 
 ### Tests end-to-end
 
@@ -270,14 +270,17 @@ npx playwright test --project=chromium
 
 El recorrido principal registra un cliente nuevo, solicita un producto y comprueba que aparece en "Mis solicitudes". Cada ejecución deja en la base de datos un usuario y una solicitud de prueba, reconocibles por su email (`e2e-...@test.com`).
 
+**Importante:** los E2E deben ejecutarse con las **claves de prueba** del captcha, en el frontend y en el backend. Con claves reales, Cloudflare puede detectar el navegador automatizado y no dar el reto por superado, así que el registro no se completaría.
+
 ## Accesibilidad
 
-- HTML semántico (`header`, `nav`, `main`, `footer`, `article`, `time`, listas, `fieldset` y `legend`).
+- HTML semántico (`header`, `nav`, `main`, `footer`, `article`, `aside`, `time`, listas, `fieldset` y `legend`).
 - Formularios con `label` asociada a cada campo y errores enlazados con `aria-describedby` y `aria-invalid`.
 - Al enviar un formulario con errores, el foco va al primer campo con error.
 - Diálogos con `role="dialog"` y `aria-modal`, foco inicial en la opción segura y cierre con Escape.
 - Avisos y estados de carga anunciados con `aria-live`, `role="status"` y `role="alert"`.
 - Botones repetidos con `aria-label` que incluye a qué elemento se refieren.
+- `aria-current` para indicar dónde se está: la pestaña activa del panel y el artículo que se lee en Actualidad.
 - Textos alternativos que describen lo que muestra cada foto; las imágenes decorativas llevan `alt=""`.
 
 ## Decisiones técnicas
@@ -291,21 +294,8 @@ El recorrido principal registra un cliente nuevo, solicita un producto y comprue
 - **Una sola vista de acceso** con pestañas, y **un solo formulario** para crear y editar productos y artículos.
 - **El precio se escribe con coma o punto**, como es natural en español, y el mapper lo convierte a número.
 - **Imagen por defecto** para los productos sin imagen o con un enlace roto.
+- **Formulario de contacto en lugar de un correo visible**: evita que el correo se recoja para enviar spam y reúne los mensajes en el panel de administración.
+- **Captcha (Cloudflare Turnstile) en el contacto y el registro**, los dos formularios públicos que crean datos. El botón de envío se activa solo al superar el reto, y el token se pide de nuevo tras cada envío porque solo sirve una vez.
+- **Actualidad en formato periódico**: el artículo seleccionado va en la URL (`?articulo=id`), así funcionan los botones de atrás y adelante del navegador y se puede compartir el enlace a una noticia concreta.
 - **E2E contra el backend real**, en lugar de simular la API.
-- **Fotos reales del apiario** en lugar de imágenes generadas, para que la web sea fiel a la realidad del negocio. Las rutas de las imágenes se enlazan con `:src` desde constantes, para que Vite no las convierta en imports.
-- **Artículos en borrador o publicados, sin borrado**: despublicar devuelve el artículo a borrador sin perder el texto. Es el mismo criterio que en las solicitudes de pedido: estados en lugar de borrar.
-- **Negritas en los artículos sin `v-html`**: `parseBold` convierte `**texto**` en trozos que el template pinta con `<strong>`. El texto sigue escapado por Vue, así que no hay riesgo de XSS.
-- **«Para el apicultor» como nombre de la categoría** de enjambres y reinas, en lugar de «productos», porque son animales vivos. Solo cambia la etiqueta: el valor interno de la API se mantiene.
-- **`/recursos` redirige al primer apartado**, porque la sección no necesita página propia: se navega desde el menú.
-
-## Próximos pasos
-
-- **Categorías y página de detalle para los artículos de Actualidad**, con filtro por categoría.
-- **Subida de imágenes** desde el panel, en lugar de indicar su ruta.
-- **Formulario de contacto** con envío de correo.
-- **Recorrido E2E del administrador.**
-- **Despliegue** en un servidor con HTTPS.
-
-## Autora
-
-**Gema Miguel** · [GitHub](https://github.com/gmp395)
+- **Fotos reales del apiario** en lugar de imágenes generadas, para que la web sea
