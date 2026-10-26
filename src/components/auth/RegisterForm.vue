@@ -3,6 +3,7 @@
  * Formulario de registro.
  * Valida en el navegador, crea la cuenta (el store inicia sesión automáticamente)
  * y emite "success" si todo va bien.
+ * Incluye el captcha de Cloudflare Turnstile para frenar registros automáticos de bots.
  */
 import { reactive, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
@@ -13,6 +14,7 @@ import {
   validateRequired,
 } from '@/utils/validation'
 import FormField from '@/components/common/FormField.vue'
+import CaptchaWidget from '@/components/common/CaptchaWidget.vue'
 
 const emit = defineEmits(['success'])
 const authStore = useAuthStore()
@@ -21,6 +23,11 @@ const form = reactive({ name: '', email: '', password: '', passwordConfirm: '' }
 const errors = reactive({ name: '', email: '', password: '', passwordConfirm: '' })
 const serverError = ref('')
 const isSubmitting = ref(false)
+
+/* Token del captcha: lo rellena CaptchaWidget por v-model */
+const captchaToken = ref('')
+/* Referencia al componente del captcha, para pedir un reto nuevo tras cada intento */
+const captcha = ref(null)
 
 /* Devuelve true si no hay errores */
 function validate() {
@@ -38,20 +45,27 @@ async function handleSubmit() {
 
   isSubmitting.value = true
   try {
-    await authStore.register(form.name.trim(), form.email.trim(), form.password)
+    await authStore.register(
+      form.name.trim(),
+      form.email.trim(),
+      form.password,
+      captchaToken.value,
+    )
     emit('success')
   } catch (error) {
     /*
      * 409 (email ya registrado): no lo confirmamos explícitamente,
-     * invitamos a iniciar sesión. 400: datos rechazados por el backend.
+     * invitamos a iniciar sesión. 400: datos o captcha rechazados por el backend.
      */
     if (error.status === 409) {
       serverError.value = 'No se ha podido crear la cuenta. Si ya tienes una, inicia sesión.'
     } else if (error.status === 400) {
-      serverError.value = 'Revisa los datos del formulario.'
+      serverError.value = 'Revisa los datos del formulario y vuelve a completar la verificación.'
     } else {
       serverError.value = error.message
     }
+    /* El token ya se ha usado: pedimos un reto nuevo para el siguiente intento */
+    captcha.value?.reset()
   } finally {
     isSubmitting.value = false
   }
@@ -94,14 +108,17 @@ async function handleSubmit() {
       :error="errors.passwordConfirm"
     />
 
+    <CaptchaWidget ref="captcha" v-model="captchaToken" />
+
     <!-- role="alert": el lector de pantalla anuncia el error en cuanto aparece -->
     <p v-if="serverError" role="alert" class="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
       {{ serverError }}
     </p>
 
+    <!-- Desactivado hasta superar el captcha: sin token, el backend lo rechazaría -->
     <button
       type="submit"
-      :disabled="isSubmitting"
+      :disabled="isSubmitting || !captchaToken"
       class="w-full rounded-md bg-primary px-4 py-3 text-base text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
     >
       {{ isSubmitting ? 'Creando cuenta…' : 'Crear cuenta' }}

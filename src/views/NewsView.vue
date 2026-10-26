@@ -3,11 +3,15 @@
  * Actualidad apícola (Recursos apícolas).
  * Reúne las citas y novedades del sector que publica el admin desde el panel
  * (Contenidos), y explica qué compartimos en cada red social.
+ * Formato de periódico: el artículo seleccionado se lee en grande a la izquierda
+ * y el resto aparece en un aside, en pequeño, a la derecha (debajo en móvil).
+ * El artículo seleccionado va en la URL (?articulo=id), así funcionan el botón
+ * Atrás del navegador y los enlaces compartidos; sin él, se muestra el más reciente.
  * Si no hay artículos o la API falla, la página sigue teniendo contenido:
  * las redes y la llamada a la acción no dependen del backend.
  */
-import { ref } from 'vue'
-import { RouterLink } from 'vue-router'
+import { computed, ref } from 'vue'
+import { RouterLink, useRoute } from 'vue-router'
 import SocialIcon from '@/components/common/SocialIcon.vue'
 import { SOCIAL_LINKS } from '@/constants/contact'
 import { articleRepository } from '@/api/articleRepository'
@@ -36,6 +40,8 @@ const topics = [
   },
 ]
 
+const route = useRoute()
+
 /* Artículos publicados (el backend ya los envía del más reciente al más antiguo) */
 const articles = ref([])
 const isLoading = ref(true)
@@ -57,6 +63,23 @@ async function loadArticles() {
   } finally {
     isLoading.value = false
   }
+}
+
+/*
+ * Artículo que se lee en grande: el de la URL (?articulo=id) si existe;
+ * si no hay ninguno indicado, o el id no corresponde a un artículo publicado,
+ * el más reciente (el primero de la lista).
+ * Los parámetros de la URL llegan siempre como texto: por eso se compara con String(id).
+ */
+const selectedArticle = computed(
+  () =>
+    articles.value.find((article) => String(article.id) === route.query.articulo) ??
+    articles.value[0],
+)
+
+/* true si el artículo es el que se está leyendo (lo usa el aside para marcarlo) */
+function isSelected(article) {
+  return article.id === selectedArticle.value?.id
 }
 
 function hideBrokenImage(articleId) {
@@ -101,41 +124,76 @@ loadArticles()
           Todavía no hay noticias publicadas. Mientras tanto, puedes seguirnos en redes.
         </p>
 
-        <div v-else class="space-y-10">
+        <!--
+          Dos columnas desde lg: artículo (2/3) y aside (1/3).
+          En móvil se apilan: primero el artículo, debajo la lista.
+        -->
+        <div v-else class="grid gap-10 lg:grid-cols-3 lg:items-start">
           <!-- article: contenido independiente, con sentido por sí mismo (HTML semántico) -->
-          <article
-            v-for="article in articles"
-            :key="article.id"
-            class="overflow-hidden rounded-xl border border-border bg-card"
-          >
+          <article class="overflow-hidden rounded-xl border border-border bg-card lg:col-span-2">
             <img
-              v-if="article.imageUrl && !brokenImageIds.has(article.id)"
-              :src="article.imageUrl"
-              :alt="`Imagen de la noticia «${article.title}»`"
+              v-if="selectedArticle.imageUrl && !brokenImageIds.has(selectedArticle.id)"
+              :src="selectedArticle.imageUrl"
+              :alt="`Imagen de la noticia «${selectedArticle.title}»`"
               class="aspect-video w-full object-cover"
               loading="lazy"
-              @error="hideBrokenImage(article.id)"
+              @error="hideBrokenImage(selectedArticle.id)"
             />
             <div class="p-6 md:p-8">
               <!-- time con datetime: la fecha legible por personas y por máquinas -->
-              <time :datetime="article.publishedAt" class="text-sm text-muted-foreground">
-                {{ formatDate(article.publishedAt) }}
+              <time :datetime="selectedArticle.publishedAt" class="text-sm text-muted-foreground">
+                {{ formatDate(selectedArticle.publishedAt) }}
               </time>
-              <h3 class="mt-2 text-2xl">{{ article.title }}</h3>
-              <p class="mt-3 font-medium">{{ article.summary }}</p>
+              <h3 class="mt-2 text-2xl">{{ selectedArticle.title }}</h3>
+              <p class="mt-3 font-medium">{{ selectedArticle.summary }}</p>
               <!--
                 whitespace-pre-line respeta los saltos de línea del texto.
                 parseBold convierte **texto** en trozos: los marcados van en <strong>.
                 Todo se pinta con {{ }} (texto escapado), nunca con v-html, para evitar XSS.
               -->
               <p class="mt-4 whitespace-pre-line text-muted-foreground"><template
-                  v-for="(segment, index) in parseBold(article.body)"
+                  v-for="(segment, index) in parseBold(selectedArticle.body)"
                   :key="index"
                 ><strong v-if="segment.bold" class="font-semibold text-foreground">{{
                     segment.text
                   }}</strong><span v-else>{{ segment.text }}</span></template></p>
             </div>
           </article>
+
+          <!--
+            aside: contenido relacionado con el principal (HTML semántico).
+            Solo tiene sentido si hay más de un artículo.
+            lg:sticky: en escritorio la lista acompaña al leer artículos largos
+            (top-24 deja hueco para la cabecera fija).
+          -->
+          <aside
+            v-if="articles.length > 1"
+            aria-labelledby="news-list-title"
+            class="rounded-xl border border-border bg-card p-5 lg:sticky lg:top-24"
+          >
+            <h3 id="news-list-title" class="text-xl">Todas las noticias</h3>
+            <ul class="mt-4 divide-y divide-border">
+              <li v-for="article in articles" :key="article.id">
+                <!--
+                  Cada noticia enlaza a esta misma página con ?articulo=id.
+                  aria-current="true" marca la que se está leyendo: lo anuncia el lector de pantalla
+                  y, con la variante aria-current:, también cambia el fondo.
+                  Se fija siempre (true o false) para no depender del marcado automático
+                  de RouterLink: todos los enlaces apuntan a la misma ruta y solo cambia la query.
+                -->
+                <RouterLink
+                  :to="{ name: 'resources-news', query: { articulo: article.id } }"
+                  :aria-current="isSelected(article) ? 'true' : 'false'"
+                  class="-mx-2 block rounded-md px-2 py-3 transition-colors hover:bg-secondary aria-current:bg-honey-soft"
+                >
+                  <time :datetime="article.publishedAt" class="text-xs text-muted-foreground">
+                    {{ formatDate(article.publishedAt) }}
+                  </time>
+                  <span class="mt-1 block font-medium">{{ article.title }}</span>
+                </RouterLink>
+              </li>
+            </ul>
+          </aside>
         </div>
       </div>
     </section>

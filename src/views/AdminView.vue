@@ -1,7 +1,7 @@
 <script setup>
 /*
  * Marco del panel de administración: título común, pestañas de navegación
- * y un RouterView donde se pinta la sección hija (Solicitudes, Productos o Contenidos).
+ * y un RouterView donde se pinta la sección hija (Solicitudes, Productos, Contenidos o Mensajes).
  * La protección por rol está en la ruta padre /admin y la heredan las hijas.
  */
 import { RouterLink, RouterView } from 'vue-router'
@@ -14,6 +14,7 @@ const tabs = [
   { name: 'admin-orders', label: 'Solicitudes' },
   { name: 'admin-products', label: 'Productos' },
   { name: 'admin-content', label: 'Contenidos' },
+  { name: 'admin-messages', label: 'Mensajes' },
 ]
 </script>
 

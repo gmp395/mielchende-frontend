@@ -24,6 +24,11 @@ export const PRODUCT_TEXT_MAX_LENGTH = 255
 export const ARTICLE_TITLE_MAX_LENGTH = 255
 export const ARTICLE_SUMMARY_MAX_LENGTH = 500
 
+
+/* Límites del formulario de contacto (los mismos que valida el backend con @Size) */
+export const CONTACT_NAME_MAX_LENGTH = 100
+export const CONTACT_MESSAGE_MAX_LENGTH = 2000
+
 /* Formato básico de email: texto@texto.texto, sin espacios */
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 

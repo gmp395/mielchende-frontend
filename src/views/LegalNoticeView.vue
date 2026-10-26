@@ -5,7 +5,6 @@
  * Los datos del titular vienen de constants/legal.js (de ejemplo hasta publicar).
  */
 import LegalPage from '@/components/legal/LegalPage.vue'
-import { CONTACT_EMAIL } from '@/constants/contact'
 import { LEGAL_INFO } from '@/constants/legal'
 
 const sections = [
@@ -19,7 +18,7 @@ const sections = [
       `Titular: ${LEGAL_INFO.ownerName}`,
       `NIF: ${LEGAL_INFO.taxId}`,
       `Domicilio: ${LEGAL_INFO.address}`,
-      `Correo electrónico: ${CONTACT_EMAIL}`,
+      'Contacto: a través del formulario de la página de Contacto',
       `Actividad: ${LEGAL_INFO.activity}`,
     ],
   },

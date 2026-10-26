@@ -18,7 +18,13 @@ test('un cliente nuevo se registra, solicita un producto y lo ve en Mis solicitu
   await page.getByLabel('Email', { exact: true }).fill(email)
   await page.getByLabel('Contraseña', { exact: true }).fill(password)
   await page.getByLabel('Repite la contraseña', { exact: true }).fill(password)
-  await page.getByRole('button', { name: 'Crear cuenta' }).click()
+  /*
+   * El botón se activa al superar el captcha. Con la clave de prueba de Cloudflare
+   * se supera solo en unos segundos; esperamos a que esté activo antes de pulsarlo
+   */
+  const registerButton = page.getByRole('button', { name: 'Crear cuenta' })
+  await expect(registerButton).toBeEnabled({ timeout: 15000 })
+  await registerButton.click()
 
   await expect(page).toHaveURL(/\/$/)
   await expect(page.getByRole('button', { name: 'Mi cuenta' })).toBeVisible()

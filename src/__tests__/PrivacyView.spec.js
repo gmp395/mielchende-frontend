@@ -6,7 +6,6 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import PrivacyView from '@/views/PrivacyView.vue'
-import { CONTACT_EMAIL } from '@/constants/contact'
 import { LEGAL_INFO } from '@/constants/legal'
 
 describe('PrivacyView', () => {
@@ -17,7 +16,9 @@ describe('PrivacyView', () => {
     expect(wrapper.find('h1').text()).toBe('Política de privacidad')
     expect(text).toContain('Responsable del tratamiento')
     expect(text).toContain(LEGAL_INFO.ownerName)
-    expect(text).toContain(CONTACT_EMAIL)
+    /* Sin correo visible: se remite al formulario de Contacto */
+    expect(text).toContain('formulario de la página de Contacto')
+    expect(text).not.toContain('@')
   })
 
   it('explica los derechos del usuario y dónde reclamar', () => {

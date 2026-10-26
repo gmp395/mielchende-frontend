@@ -17,9 +17,12 @@ function toBasicCredentials(email, password) {
 }
 
 export const authRepository = {
-  /* POST /auth/register → { id, name, email, role } */
-  register(name, email, password) {
-    return httpClient.post('/auth/register', { name, email, password })
+  /*
+   * POST /auth/register → { id, name, email, role }.
+   * captchaToken: token de Cloudflare Turnstile; el backend lo verifica antes de crear la cuenta
+   */
+  register(name, email, password, captchaToken) {
+    return httpClient.post('/auth/register', { name, email, password, captchaToken })
   },
 
   /*

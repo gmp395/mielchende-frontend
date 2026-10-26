@@ -112,9 +112,14 @@ describe('auth store', () => {
     authRepository.login.mockResolvedValue({ token })
     const store = useAuthStore()
 
-    await store.register('Ana', 'ana@test.com', 'secreta')
+    await store.register('Ana', 'ana@test.com', 'secreta', 'token-captcha')
 
-    expect(authRepository.register).toHaveBeenCalledWith('Ana', 'ana@test.com', 'secreta')
+    expect(authRepository.register).toHaveBeenCalledWith(
+      'Ana',
+      'ana@test.com',
+      'secreta',
+      'token-captcha',
+    )
     expect(authRepository.login).toHaveBeenCalledWith('ana@test.com', 'secreta')
     expect(store.isAuthenticated).toBe(true)
   })

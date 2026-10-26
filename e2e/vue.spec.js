@@ -9,7 +9,7 @@ test('la página de inicio muestra cabecera, contenido y pie', async ({ page }) 
 
   /* banner = <header> de la página; contentinfo = <footer> de la página */
   await expect(page.getByRole('banner')).toBeVisible()
-  await expect(page.locator('main h1')).toHaveText('Miel cruda de Terras do Miño')
+  await expect(page.locator('main h1')).toHaveText('Miel Chende')
   await expect(page.getByRole('contentinfo')).toBeVisible()
 })
 

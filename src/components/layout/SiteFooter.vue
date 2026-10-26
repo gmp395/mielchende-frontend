@@ -11,7 +11,7 @@ import logoUrl from '@/assets/images/logo.png'
 /* Firma personal de la autora: sustituye a su nombre en la línea de autoría */
 import authorLogoUrl from '@/assets/images/logo-gema-miguel.png'
 /* Datos de contacto compartidos con la página de Contacto */
-import { CONTACT_EMAIL, LOCATION_LABEL, SOCIAL_LINKS } from '@/constants/contact'
+import { LOCATION_LABEL, SOCIAL_LINKS } from '@/constants/contact'
 import SocialIcon from '@/components/common/SocialIcon.vue'
 
 /* Perfil de GitHub de la autora del proyecto */
@@ -63,16 +63,16 @@ const currentYear = new Date().getFullYear()
 
       <!-- Contacto: el título lleva a la página de contacto completa -->
       <div>
-        <RouterLink
-          :to="{ name: 'contact' }"
-          class="eyebrow transition-colors hover:text-primary"
-        >
+        <RouterLink :to="{ name: 'contact' }" class="eyebrow transition-colors hover:text-primary">
           Contacto
         </RouterLink>
         <ul class="mt-2 space-y-1.5 text-sm text-muted-foreground">
           <li>{{ LOCATION_LABEL }}</li>
+          <!-- Sin correo visible (lo recogerían los bots): se escribe desde el formulario -->
           <li>
-            <a :href="`mailto:${CONTACT_EMAIL}`" class="hover:text-primary">{{ CONTACT_EMAIL }}</a>
+            <RouterLink :to="{ name: 'contact' }" class="hover:text-primary">
+              Escríbenos desde el formulario
+            </RouterLink>
           </li>
         </ul>
       </div>
@@ -100,7 +100,11 @@ const currentYear = new Date().getFullYear()
               rel="noopener noreferrer"
               class="group relative inline-flex items-center rounded-sm"
             >
-              <img :src="authorLogoUrl" alt="Gema Miguel" class="size-8 rounded-sm object-contain" />
+              <img
+                :src="authorLogoUrl"
+                alt="Gema Miguel"
+                class="size-8 rounded-sm object-contain"
+              />
               <!--
                 Etiqueta visual con el nombre, encima del logo.
                 aria-hidden: el lector de pantalla ya lee el alt; así no lo repite.
@@ -117,7 +121,9 @@ const currentYear = new Date().getFullYear()
         </div>
         <div class="flex flex-wrap gap-5">
           <RouterLink to="/aviso-legal" class="hover:text-primary">Aviso legal</RouterLink>
-          <RouterLink to="/privacidad" class="hover:text-primary">Política de privacidad</RouterLink>
+          <RouterLink to="/privacidad" class="hover:text-primary"
+            >Política de privacidad</RouterLink
+          >
         </div>
       </div>
     </div>
